@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -82,5 +83,23 @@ Route::middleware('auth')->group(function () {
         
         // Additional route for booking form
         Route::get('/booking/{schedule}', [MahasiswaController::class, 'showBookingForm'])->name('booking.form');
+    });
+
+    // Admin routes - only accessible by users with role 'admin'
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        // GET /admin/dashboard -> Admin dashboard with statistics
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        
+        // GET /admin/assignments -> List all assignments
+        Route::get('/assignments', [AdminController::class, 'index'])->name('assignments.index');
+        
+        // GET /admin/assignments/create -> Show create assignment form
+        Route::get('/assignments/create', [AdminController::class, 'create'])->name('assignments.create');
+        
+        // POST /admin/assignments -> Store new assignment
+        Route::post('/assignments', [AdminController::class, 'store'])->name('assignments.store');
+        
+        // DELETE /admin/assignments/{assignment} -> Delete assignment
+        Route::delete('/assignments/{assignment}', [AdminController::class, 'destroy'])->name('assignments.destroy');
     });
 });

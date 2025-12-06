@@ -14,6 +14,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create 1 Admin user
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@admin',
+            'password' => Hash::make('12345678'),
+            'role' => 'admin',
+        ]);
+
         // Create 5 Dosen users
         for ($i = 1; $i <= 5; $i++) {
             User::create([

@@ -26,7 +26,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:dosen,mahasiswa',
+            'role' => 'required|in:admin,dosen,mahasiswa',
         ]);
 
         $user = User::create([
@@ -38,7 +38,9 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        if ($user->role === 'dosen') {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'dosen') {
             return redirect()->route('dosen.dashboard');
         } else {
             return redirect()->route('mahasiswa.dashboard');
@@ -69,7 +71,9 @@ class AuthController extends Controller
             $request->session()->regenerate();
             
             $user = Auth::user();
-            if ($user->role === 'dosen') {
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'dosen') {
                 return redirect()->route('dosen.dashboard');
             } else {
                 return redirect()->route('mahasiswa.dashboard');
