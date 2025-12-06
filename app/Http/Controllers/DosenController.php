@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use App\Models\Booking;
+use App\Models\CounselingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,14 +25,26 @@ class DosenController extends Controller
         $totalBookings = Booking::whereHas('schedule', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->count();
+
+        // Get pending counseling requests count
+        $pendingCounselingRequests = CounselingRequest::where('dosen_id', $user->id)
+            ->where('status', 'pending')
+            ->count();
         
-        // Get all schedules
+        // Get all schedules (all statuses)
         $schedules = Schedule::where('user_id', $user->id)
-            ->orderBy('date', 'desc')
-            ->orderBy('start_time', 'desc')
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->get();
+
+        // Get all counseling requests (all statuses)
+        $counselingRequests = CounselingRequest::with('mahasiswa')
+            ->where('dosen_id', $user->id)
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
             ->get();
         
-        return view('dashboard.dosen', compact('activeSchedules', 'totalBookings', 'schedules'));
+        return view('dashboard.dosen', compact('activeSchedules', 'totalBookings', 'schedules', 'pendingCounselingRequests', 'counselingRequests'));
     }
 
     /**
@@ -259,5 +272,46 @@ class DosenController extends Controller
         $booking->update(['status' => 'rejected']);
 
         return back()->with('success', 'Booking berhasil ditolak!');
+    }
+
+    /**
+     * Show counseling requests for dosen.
+     */
+    public function counselingRequests()
+    {
+        $user = Auth::user();
+        $requests = CounselingRequest::with('mahasiswa')
+            ->where('dosen_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('dosen.counseling-requests', compact('requests'));
+    }
+
+    /**
+     * Update counseling request status.
+     */
+    public function updateCounselingStatus(Request $request, CounselingRequest $counselingRequest)
+    {
+        // Ensure the request belongs to the authenticated dosen
+        if ($counselingRequest->dosen_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:1000',
+        ]);
+
+        $counselingRequest->update([
+            'status' => $request->status,
+            'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
+        ]);
+
+        $message = $request->status === 'approved' 
+            ? 'Permintaan bimbingan berhasil disetujui!' 
+            : 'Permintaan bimbingan berhasil ditolak!';
+
+        return back()->with('success', $message);
     }
 }

@@ -79,6 +79,65 @@
 
     <hr>
 
+    <h2>My Counseling Requests</h2>
+
+    @if($counselingRequests->count() > 0)
+        <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Dosen</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                    <th>File</th>
+                    <th>Pesan</th>
+                    <th>Status</th>
+                    <th>Alasan Penolakan</th>
+                    <th>Tanggal Request</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($counselingRequests as $request)
+                <tr>
+                    <td>{{ $request->dosen->name }}</td>
+                    <td>{{ $request->date->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($request->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($request->end_time)->format('H:i') }}</td>
+                    <td>
+                        @if($request->file_path)
+                            <a href="{{ route('mahasiswa.counseling.download', $request->id) }}" style="color: #007bff;">Download</a>
+                        @else
+                            <span style="color: #999;">-</span>
+                        @endif
+                    </td>
+                    <td>{{ $request->message ?? '-' }}</td>
+                    <td>
+                        @if($request->status === 'pending')
+                            <span style="background: #ffc107; color: black; padding: 5px 10px; font-weight: bold;">Menunggu</span>
+                        @elseif($request->status === 'approved')
+                            <span style="background: #28a745; color: white; padding: 5px 10px; font-weight: bold;">Disetujui</span>
+                        @elseif($request->status === 'rejected')
+                            <span style="background: #dc3545; color: white; padding: 5px 10px; font-weight: bold;">Ditolak</span>
+                        @else
+                            <span style="background: #6c757d; color: white; padding: 5px 10px;">{{ ucfirst($request->status) }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($request->status === 'rejected' && $request->rejection_reason)
+                            <span style="color: #dc3545;">{{ $request->rejection_reason }}</span>
+                        @else
+                            <span style="color: #999;">-</span>
+                        @endif
+                    </td>
+                    <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Anda belum memiliki counseling request.</p>
+    @endif
+
+    <hr>
+
     <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit">Logout</button>

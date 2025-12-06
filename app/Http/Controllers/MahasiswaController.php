@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use App\Models\Booking;
 use App\Models\User;
+use App\Models\CounselingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,23 +17,17 @@ class MahasiswaController extends Controller
      */
     public function dashboard(Request $request)
     {
-        $query = Schedule::with('dosen')
+        $mahasiswa = Auth::user();
+        
+        // Get IDs of assigned dosen
+        $assignedDosenIds = $mahasiswa->assignedDosens()->pluck('users.id');
+
+        // Only show schedules from assigned dosen
+        $schedules = Schedule::with('dosen')
+            ->whereIn('user_id', $assignedDosenIds)
             ->where('status', 'open')
-            ->where('date', '>=', now()->format('Y-m-d'));
-
-        // Filter by dosen name
-        if ($request->filled('dosen_name')) {
-            $query->whereHas('dosen', function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->dosen_name . '%');
-            });
-        }
-
-        // Filter by date
-        if ($request->filled('date')) {
-            $query->where('date', $request->date);
-        }
-
-        $schedules = $query->orderBy('date', 'asc')
+            ->where('date', '>=', now()->format('Y-m-d'))
+            ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->get();
 
@@ -44,6 +39,15 @@ class MahasiswaController extends Controller
      */
     public function showBookingForm(Schedule $schedule)
     {
+        $mahasiswa = Auth::user();
+        
+        // Check if this dosen is assigned to the mahasiswa
+        $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $schedule->user_id)->exists();
+        
+        if (!$isAssigned) {
+            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda tidak memiliki akses ke dosen ini!');
+        }
+        
         // Check if schedule is open
         if ($schedule->status !== 'open') {
             return redirect()->route('mahasiswa.dashboard')->with('error', 'Jadwal ini sudah ditutup!');
@@ -118,7 +122,72 @@ class MahasiswaController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('mahasiswa.my-bookings', compact('bookings'));
+        $counselingRequests = CounselingRequest::with('dosen')
+            ->where('mahasiswa_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('mahasiswa.my-bookings', compact('bookings', 'counselingRequests'));
+    }
+
+    /**
+     * Show form to request counseling.
+     */
+    public function createCounselingRequest()
+    {
+        $mahasiswa = Auth::user();
+        $dosens = $mahasiswa->assignedDosens;
+
+        if ($dosens->isEmpty()) {
+            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda belum memiliki dosen yang ditugaskan!');
+        }
+
+        return view('mahasiswa.request-counseling', compact('dosens'));
+    }
+
+    /**
+     * Store counseling request.
+     */
+    public function storeCounselingRequest(Request $request)
+    {
+        $request->validate([
+            'dosen_id' => 'required|exists:users,id',
+            'date' => 'required|date|after_or_equal:today',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'file' => 'required|file|mimes:pdf|max:10240',
+            'message' => 'nullable|string|max:1000',
+        ]);
+
+        $mahasiswa = Auth::user();
+
+        // Check if dosen is assigned to mahasiswa
+        $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $request->dosen_id)->exists();
+        
+        if (!$isAssigned) {
+            return back()->withErrors(['error' => 'Dosen ini tidak ditugaskan kepada Anda!'])->withInput();
+        }
+
+        // Upload file
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('counseling_requests', $fileName, 'public');
+        }
+
+        CounselingRequest::create([
+            'mahasiswa_id' => Auth::id(),
+            'dosen_id' => $request->dosen_id,
+            'date' => $request->date,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'file_path' => $filePath,
+            'message' => $request->message,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Permintaan bimbingan berhasil dikirim! Menunggu konfirmasi dosen.');
     }
 }
 

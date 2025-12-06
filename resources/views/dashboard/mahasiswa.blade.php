@@ -28,31 +28,13 @@
     <hr>
 
     <div style="margin: 20px 0;">
-        <a href="{{ route('mahasiswa.my-bookings') }}" style="display: inline-block; background: #28a745; color: white; padding: 10px 20px; text-decoration: none;">
+        <a href="{{ route('mahasiswa.my-bookings') }}" style="display: inline-block; background: #28a745; color: white; padding: 10px 20px; text-decoration: none; margin-right: 10px;">
             Lihat Riwayat Bimbingan Saya
         </a>
+        <a href="{{ route('mahasiswa.counseling.create') }}" style="display: inline-block; background: #17a2b8; color: white; padding: 10px 20px; text-decoration: none;">
+            Request Counseling
+        </a>
     </div>
-
-    <hr>
-
-    <h2>Cari Jadwal Bimbingan</h2>
-
-    <form method="GET" action="{{ route('mahasiswa.dashboard') }}" style="margin: 20px 0;">
-        <div style="margin: 10px 0;">
-            <label for="dosen_name">Nama Dosen:</label><br>
-            <input type="text" id="dosen_name" name="dosen_name" value="{{ request('dosen_name') }}" placeholder="Cari nama dosen..." style="width: 300px; padding: 5px;">
-        </div>
-
-        <div style="margin: 10px 0;">
-            <label for="date">Tanggal:</label><br>
-            <input type="date" id="date" name="date" value="{{ request('date') }}" style="width: 300px; padding: 5px;">
-        </div>
-
-        <div style="margin: 10px 0;">
-            <button type="submit" style="background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer;">Cari</button>
-            <a href="{{ route('mahasiswa.dashboard') }}" style="display: inline-block; background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; margin-left: 10px;">Reset</a>
-        </div>
-    </form>
 
     <hr>
 

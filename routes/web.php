@@ -63,6 +63,27 @@ Route::middleware('auth')->group(function () {
         // GET /dosen/incoming-requests -> View booking requests
         Route::get('/incoming-requests', [DosenController::class, 'incomingRequests'])->name('incoming-requests');
         
+        // GET /dosen/counseling-requests -> View counseling requests
+        Route::get('/counseling-requests', [DosenController::class, 'counselingRequests'])->name('counseling-requests');
+        
+        // PATCH /dosen/counseling/{counselingRequest}/status -> Approve/Reject counseling request
+        Route::patch('/counseling/{counselingRequest}/status', [DosenController::class, 'updateCounselingStatus'])->name('counseling.update-status');
+        
+        // GET /dosen/counseling/{counselingRequest}/download -> Download counseling file
+        Route::get('/counseling/{counselingRequest}/download', function (App\Models\CounselingRequest $counselingRequest) {
+            $user = Auth::user();
+            
+            if ($counselingRequest->dosen_id !== $user->id) {
+                abort(403, 'Unauthorized to download this file.');
+            }
+            
+            if (!$counselingRequest->file_path || !Storage::disk('public')->exists($counselingRequest->file_path)) {
+                abort(404, 'File not found.');
+            }
+            
+            return response()->download(storage_path('app/public/' . $counselingRequest->file_path));
+        })->name('counseling.download');
+        
         // RESOURCE /dosen/schedules -> CRUD Schedules
         Route::resource('schedules', DosenController::class)->except(['index', 'show']);
         
@@ -83,6 +104,27 @@ Route::middleware('auth')->group(function () {
         
         // Additional route for booking form
         Route::get('/booking/{schedule}', [MahasiswaController::class, 'showBookingForm'])->name('booking.form');
+        
+        // GET /mahasiswa/counseling/create -> Show counseling request form
+        Route::get('/counseling/create', [MahasiswaController::class, 'createCounselingRequest'])->name('counseling.create');
+        
+        // POST /mahasiswa/counseling -> Store counseling request
+        Route::post('/counseling', [MahasiswaController::class, 'storeCounselingRequest'])->name('counseling.store');
+        
+        // GET /mahasiswa/counseling/{counselingRequest}/download -> Download counseling file
+        Route::get('/counseling/{counselingRequest}/download', function (App\Models\CounselingRequest $counselingRequest) {
+            $user = Auth::user();
+            
+            if ($counselingRequest->mahasiswa_id !== $user->id) {
+                abort(403, 'Unauthorized to download this file.');
+            }
+            
+            if (!$counselingRequest->file_path || !Storage::disk('public')->exists($counselingRequest->file_path)) {
+                abort(404, 'File not found.');
+            }
+            
+            return response()->download(storage_path('app/public/' . $counselingRequest->file_path));
+        })->name('counseling.download');
     });
 
     // Admin routes - only accessible by users with role 'admin'

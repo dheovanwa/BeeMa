@@ -62,4 +62,36 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+
+    /**
+     * Get the dosen assigned to this mahasiswa.
+     */
+    public function assignedDosens()
+    {
+        return $this->belongsToMany(User::class, 'assignments', 'mahasiswa_id', 'dosen_id');
+    }
+
+    /**
+     * Get the mahasiswa assigned to this dosen.
+     */
+    public function assignedMahasiswas()
+    {
+        return $this->belongsToMany(User::class, 'assignments', 'dosen_id', 'mahasiswa_id');
+    }
+
+    /**
+     * Get counseling requests sent by mahasiswa.
+     */
+    public function counselingRequestsSent()
+    {
+        return $this->hasMany(CounselingRequest::class, 'mahasiswa_id');
+    }
+
+    /**
+     * Get counseling requests received by dosen.
+     */
+    public function counselingRequestsReceived()
+    {
+        return $this->hasMany(CounselingRequest::class, 'dosen_id');
+    }
 }
