@@ -8,6 +8,8 @@ use App\Models\CounselingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
+use Carbon\Carbon;
 
 class DosenController extends Controller
 {
@@ -72,52 +74,54 @@ class DosenController extends Controller
 
         $dosenId = Auth::id();
         $date = $request->date;
-        $startTime = $request->start_time . ':00'; // Add seconds
-        $endTime = $request->end_time . ':00'; // Add seconds
+        // Normalize request times to include seconds if missing
+        $startTime = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
+        $endTime = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
 
-        // Get all schedules for this dosen on this date
-        $existingSchedules = Schedule::where('user_id', $dosenId)
-            ->where('date', $date)
-            ->get();
+        // Log the incoming request date/time
+        Log::info('Schedule create attempt', [
+            'user_id' => $dosenId,
+            'date' => $date,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
 
-        error_log("=== SCHEDULE CONFLICT CHECK ===");
-        error_log("New schedule: $date $startTime - $endTime");
-        error_log("Existing schedules count: " . $existingSchedules->count());
+        // Build Unix timestamps (with date) for robust overlap checking
+        $newStart = Carbon::parse($date . ' ' . $startTime)->timestamp;
+        $newEnd = Carbon::parse($date . ' ' . $endTime)->timestamp;
 
-        // Check for overlaps
-        foreach ($existingSchedules as $existing) {
-            $existingStart = $existing->getRawOriginal('start_time');
-            $existingEnd = $existing->getRawOriginal('end_time');
-            
-            error_log("Checking against: $existingStart - $existingEnd");
-            error_log("Condition 1 (existingStart < newEnd): $existingStart < $endTime = " . ($existingStart < $endTime ? 'true' : 'false'));
-            error_log("Condition 2 (existingEnd > newStart): $existingEnd > $startTime = " . ($existingEnd > $startTime ? 'true' : 'false'));
-            
-            // Two time ranges overlap if: start1 < end2 AND end1 > start2
-            if ($existingStart < $endTime && $existingEnd > $startTime) {
-                error_log("CONFLICT DETECTED!");
-                return back()->withErrors([
-                    'error' => 'Waktu jadwal bertabrakan dengan jadwal lain! Konflik dengan: ' . substr($existingStart, 0, 5) . ' - ' . substr($existingEnd, 0, 5)
-                ])->withInput();
-            }
+        // Pull same-day schedules for the dosen and compare in PHP with timestamps
+        $sameDaySchedules = Schedule::where('user_id', $dosenId)
+            ->whereDate('date', $date)
+            ->get(['start_time', 'end_time']);
+
+        // Log all existing schedule dates/times on that day for this user
+        Log::info('Existing schedules for user/day', [
+            'user_id' => $dosenId,
+            'date' => $date,
+            'schedules' => $sameDaySchedules->map(function ($s) {
+                return [
+                    'start_time' => $s->start_time,
+                    'end_time' => $s->end_time,
+                ];
+            })->values()->all(),
+        ]);
+
+        $overlappingSchedule = $sameDaySchedules->contains(function ($s) use ($date, $newStart, $newEnd) {
+            // Parse existing schedule times robustly (supports HH:MM or HH:MM:SS)
+            $existingStart = Carbon::parse($date . ' ' . $s->start_time)->timestamp;
+            $existingEnd = Carbon::parse($date . ' ' . $s->end_time)->timestamp;
+            return ($existingEnd > $newStart) && ($existingStart < $newEnd);
+        });
+
+        if ($overlappingSchedule) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['time' => 'Jadwal bertabrakan dengan jadwal lain yang sudah ada. Silakan pilih waktu yang berbeda.']);
         }
 
-        // Check for time conflicts with counseling requests
-        $existingCounselingRequests = CounselingRequest::where('dosen_id', $dosenId)
-            ->where('date', $date)
-            ->whereIn('status', ['pending', 'approved'])
-            ->get();
-
-        foreach ($existingCounselingRequests as $existing) {
-            $existingStart = $existing->getRawOriginal('start_time');
-            $existingEnd = $existing->getRawOriginal('end_time');
-            
-            if ($existingStart < $endTime && $existingEnd > $startTime) {
-                return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan permintaan bimbingan yang sudah ada!'])->withInput();
-            }
-        }
-
-        Schedule::create([
+        try {
+            Schedule::create([
             'user_id' => $dosenId,
             'date' => $date,
             'start_time' => $request->start_time,
@@ -125,7 +129,15 @@ class DosenController extends Controller
             'quota' => $request->quota,
             'location' => $request->location,
             'status' => $request->status,
-        ]);
+            ]);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') { // Integrity constraint violation
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['time' => 'Duplikat jadwal pada waktu yang sama tidak diperbolehkan.']);
+            }
+            throw $e;
+        }
 
         return redirect()->route('dosen.dashboard')->with('success', 'Jadwal berhasil ditambahkan!');
     }
@@ -164,42 +176,70 @@ class DosenController extends Controller
 
         $dosenId = Auth::id();
         $date = $request->date;
-        $startTime = $request->start_time;
-        $endTime = $request->end_time;
+        // Normalize request times to include seconds if missing
+        $startTime = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
+        $endTime = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
 
-        // Check for time conflicts with other existing schedules (excluding current one)
-        // Two time ranges overlap if: start1 < end2 AND start2 < end1
-        $scheduleConflict = Schedule::where('user_id', $dosenId)
-            ->where('date', $date)
+        // Log the incoming update request date/time
+        Log::info('Schedule update attempt', [
+            'user_id' => $dosenId,
+            'schedule_id' => $schedule->id,
+            'date' => $date,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
+
+        // Build Unix timestamps (with date) for robust overlap checking
+        $newStart = Carbon::parse($date . ' ' . $startTime)->timestamp;
+        $newEnd = Carbon::parse($date . ' ' . $endTime)->timestamp;
+
+        // Pull same-day schedules for the dosen (excluding current) and compare in PHP
+        $sameDaySchedules = Schedule::where('user_id', $dosenId)
+            ->whereDate('date', $date)
             ->where('id', '!=', $schedule->id)
-            ->where('start_time', '<', $endTime)
-            ->where('end_time', '>', $startTime)
-            ->exists();
+            ->get(['start_time', 'end_time']);
 
-        if ($scheduleConflict) {
-            return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan jadwal lain yang sudah ada!'])->withInput();
+        // Log all existing schedule dates/times on that day for this user (excluding current)
+        Log::info('Existing schedules for user/day (excluding current)', [
+            'user_id' => $dosenId,
+            'date' => $date,
+            'schedules' => $sameDaySchedules->map(function ($s) {
+                return [
+                    'start_time' => $s->start_time,
+                    'end_time' => $s->end_time,
+                ];
+            })->values()->all(),
+        ]);
+
+        $overlappingSchedule = $sameDaySchedules->contains(function ($s) use ($date, $newStart, $newEnd) {
+            $existingStart = Carbon::parse($date . ' ' . $s->start_time)->timestamp;
+            $existingEnd = Carbon::parse($date . ' ' . $s->end_time)->timestamp;
+            return ($existingEnd > $newStart) && ($existingStart < $newEnd);
+        });
+
+        if ($overlappingSchedule) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['time' => 'Jadwal bertabrakan dengan jadwal lain yang sudah ada. Silakan pilih waktu yang berbeda.']);
         }
 
-        // Check for time conflicts with counseling requests
-        $counselingConflict = CounselingRequest::where('dosen_id', $dosenId)
-            ->where('date', $date)
-            ->whereIn('status', ['pending', 'approved'])
-            ->where('start_time', '<', $endTime)
-            ->where('end_time', '>', $startTime)
-            ->exists();
-
-        if ($counselingConflict) {
-            return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan permintaan bimbingan yang sudah ada!'])->withInput();
-        }
-
-        $schedule->update([
+        try {
+            $schedule->update([
             'date' => $date,
             'start_time' => $startTime,
             'end_time' => $endTime,
             'quota' => $request->quota,
             'location' => $request->location,
             'status' => $request->status,
-        ]);
+            ]);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['time' => 'Duplikat jadwal pada waktu yang sama tidak diperbolehkan.']);
+            }
+            throw $e;
+        }
 
         return redirect()->route('dosen.dashboard')->with('success', 'Jadwal berhasil diperbarui!');
     }
