@@ -47,6 +47,11 @@
         </div>
 
         <div style="margin: 10px 0;">
+            <label for="location">Lokasi:</label><br>
+            <input type="text" id="location" name="location" value="{{ old('location', $schedule->location) }}" placeholder="Contoh: Ruang 301, Gedung A" style="width: 300px; padding: 5px;">
+        </div>
+
+        <div style="margin: 10px 0;">
             <label for="status">Status:</label><br>
             <select id="status" name="status" required style="width: 300px; padding: 5px;">
                 <option value="open" {{ old('status', $schedule->status) == 'open' ? 'selected' : '' }}>Buka</option>

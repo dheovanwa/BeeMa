@@ -89,6 +89,7 @@
                     <th>Tanggal</th>
                     <th>Waktu Mulai</th>
                     <th>Waktu Selesai</th>
+                    <th>Lokasi</th>
                     <th>Kuota</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -104,6 +105,7 @@
                             <td>{{ $schedule->date->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}</td>
                             <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</td>
+                            <td>{{ $schedule->location ?? '-' }}</td>
                             <td>{{ $schedule->quota }}</td>
                             <td>
                                 @if($schedule->status === 'open')
@@ -132,6 +134,7 @@
                             <td>{{ $request->date->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($request->start_time)->format('H:i') }}</td>
                             <td>{{ \Carbon\Carbon::parse($request->end_time)->format('H:i') }}</td>
+                            <td>-</td>
                             <td>1</td>
                             <td>
                                 @if($request->status === 'pending')

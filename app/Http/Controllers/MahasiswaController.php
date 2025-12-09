@@ -73,7 +73,7 @@ class MahasiswaController extends Controller
     {
         $request->validate([
             'schedule_id' => 'required|exists:schedules,id',
-            'file' => 'required|file|mimes:pdf|max:10240', // 10MB max
+            'file' => 'nullable|file|mimes:pdf|max:10240', // 10MB max
             'message' => 'nullable|string|max:1000',
         ]);
 
@@ -155,17 +155,45 @@ class MahasiswaController extends Controller
             'date' => 'required|date|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'file' => 'required|file|mimes:pdf|max:10240',
+            'file' => 'nullable|file|mimes:pdf|max:10240',
             'message' => 'nullable|string|max:1000',
         ]);
 
         $mahasiswa = Auth::user();
+        $dosenId = $request->dosen_id;
+        $date = $request->date;
+        $startTime = $request->start_time;
+        $endTime = $request->end_time;
 
         // Check if dosen is assigned to mahasiswa
-        $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $request->dosen_id)->exists();
+        $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $dosenId)->exists();
         
         if (!$isAssigned) {
             return back()->withErrors(['error' => 'Dosen ini tidak ditugaskan kepada Anda!'])->withInput();
+        }
+
+        // Check for time conflicts with dosen's existing schedules
+        // Two time ranges overlap if: start1 < end2 AND start2 < end1
+        $scheduleConflict = Schedule::where('user_id', $dosenId)
+            ->where('date', $date)
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
+            ->exists();
+
+        if ($scheduleConflict) {
+            return back()->withErrors(['error' => 'Waktu yang Anda pilih bertabrakan dengan jadwal dosen yang sudah ada!'])->withInput();
+        }
+
+        // Check for time conflicts with other counseling requests
+        $counselingConflict = CounselingRequest::where('dosen_id', $dosenId)
+            ->where('date', $date)
+            ->whereIn('status', ['pending', 'approved'])
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
+            ->exists();
+
+        if ($counselingConflict) {
+            return back()->withErrors(['error' => 'Waktu yang Anda pilih bertabrakan dengan permintaan bimbingan lain yang sudah ada!'])->withInput();
         }
 
         // Upload file
@@ -178,10 +206,10 @@ class MahasiswaController extends Controller
 
         CounselingRequest::create([
             'mahasiswa_id' => Auth::id(),
-            'dosen_id' => $request->dosen_id,
-            'date' => $request->date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
+            'dosen_id' => $dosenId,
+            'date' => $date,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
             'file_path' => $filePath,
             'message' => $request->message,
             'status' => 'pending',

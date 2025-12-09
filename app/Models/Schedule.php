@@ -19,6 +19,7 @@ class Schedule extends Model
         'start_time',
         'end_time',
         'quota',
+        'location',
         'status',
     ];
 
@@ -31,8 +32,6 @@ class Schedule extends Model
     {
         return [
             'date' => 'date',
-            'start_time' => 'datetime:H:i',
-            'end_time' => 'datetime:H:i',
         ];
     }
 

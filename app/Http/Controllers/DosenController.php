@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\CounselingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DosenController extends Controller
 {
@@ -65,15 +66,64 @@ class DosenController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'quota' => 'required|integer|min:1',
+            'location' => 'nullable|string|max:255',
             'status' => 'required|in:open,closed',
         ]);
 
+        $dosenId = Auth::id();
+        $date = $request->date;
+        $startTime = $request->start_time . ':00'; // Add seconds
+        $endTime = $request->end_time . ':00'; // Add seconds
+
+        // Get all schedules for this dosen on this date
+        $existingSchedules = Schedule::where('user_id', $dosenId)
+            ->where('date', $date)
+            ->get();
+
+        error_log("=== SCHEDULE CONFLICT CHECK ===");
+        error_log("New schedule: $date $startTime - $endTime");
+        error_log("Existing schedules count: " . $existingSchedules->count());
+
+        // Check for overlaps
+        foreach ($existingSchedules as $existing) {
+            $existingStart = $existing->getRawOriginal('start_time');
+            $existingEnd = $existing->getRawOriginal('end_time');
+            
+            error_log("Checking against: $existingStart - $existingEnd");
+            error_log("Condition 1 (existingStart < newEnd): $existingStart < $endTime = " . ($existingStart < $endTime ? 'true' : 'false'));
+            error_log("Condition 2 (existingEnd > newStart): $existingEnd > $startTime = " . ($existingEnd > $startTime ? 'true' : 'false'));
+            
+            // Two time ranges overlap if: start1 < end2 AND end1 > start2
+            if ($existingStart < $endTime && $existingEnd > $startTime) {
+                error_log("CONFLICT DETECTED!");
+                return back()->withErrors([
+                    'error' => 'Waktu jadwal bertabrakan dengan jadwal lain! Konflik dengan: ' . substr($existingStart, 0, 5) . ' - ' . substr($existingEnd, 0, 5)
+                ])->withInput();
+            }
+        }
+
+        // Check for time conflicts with counseling requests
+        $existingCounselingRequests = CounselingRequest::where('dosen_id', $dosenId)
+            ->where('date', $date)
+            ->whereIn('status', ['pending', 'approved'])
+            ->get();
+
+        foreach ($existingCounselingRequests as $existing) {
+            $existingStart = $existing->getRawOriginal('start_time');
+            $existingEnd = $existing->getRawOriginal('end_time');
+            
+            if ($existingStart < $endTime && $existingEnd > $startTime) {
+                return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan permintaan bimbingan yang sudah ada!'])->withInput();
+            }
+        }
+
         Schedule::create([
-            'user_id' => Auth::id(),
-            'date' => $request->date,
+            'user_id' => $dosenId,
+            'date' => $date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'quota' => $request->quota,
+            'location' => $request->location,
             'status' => $request->status,
         ]);
 
@@ -108,14 +158,46 @@ class DosenController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'quota' => 'required|integer|min:1',
+            'location' => 'nullable|string|max:255',
             'status' => 'required|in:open,closed',
         ]);
 
+        $dosenId = Auth::id();
+        $date = $request->date;
+        $startTime = $request->start_time;
+        $endTime = $request->end_time;
+
+        // Check for time conflicts with other existing schedules (excluding current one)
+        // Two time ranges overlap if: start1 < end2 AND start2 < end1
+        $scheduleConflict = Schedule::where('user_id', $dosenId)
+            ->where('date', $date)
+            ->where('id', '!=', $schedule->id)
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
+            ->exists();
+
+        if ($scheduleConflict) {
+            return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan jadwal lain yang sudah ada!'])->withInput();
+        }
+
+        // Check for time conflicts with counseling requests
+        $counselingConflict = CounselingRequest::where('dosen_id', $dosenId)
+            ->where('date', $date)
+            ->whereIn('status', ['pending', 'approved'])
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
+            ->exists();
+
+        if ($counselingConflict) {
+            return back()->withErrors(['error' => 'Waktu jadwal bertabrakan dengan permintaan bimbingan yang sudah ada!'])->withInput();
+        }
+
         $schedule->update([
-            'date' => $request->date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
+            'date' => $date,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
             'quota' => $request->quota,
+            'location' => $request->location,
             'status' => $request->status,
         ]);
 

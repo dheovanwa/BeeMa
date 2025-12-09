@@ -18,6 +18,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('quota');
+            $table->string('location')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->timestamps();
         });

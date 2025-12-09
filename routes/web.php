@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Storage;
 
 // Landing Page
 Route::get('/', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'dosen') {
+            return redirect()->route('dosen.dashboard');
+        } else {
+            return redirect()->route('mahasiswa.dashboard');
+        }
+    }
     return view('landing');
 })->name('landing');
 
@@ -22,12 +32,10 @@ Route::get('/lang/{locale}', function ($locale) {
 })->name('lang.switch');
 
 // Guest routes (not authenticated)
-Route::middleware('guest')->group(function () {
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-});
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

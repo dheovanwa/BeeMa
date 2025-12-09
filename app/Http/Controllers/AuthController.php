@@ -14,6 +14,10 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
+        if (Auth::check()) {
+            return $this->redirectToDashboard(Auth::user());
+        }
+        
         return view('auth.register');
     }
 
@@ -52,6 +56,10 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return $this->redirectToDashboard(Auth::user());
+        }
+        
         return view('auth.login');
     }
 
@@ -96,5 +104,19 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    /**
+     * Redirect user to their dashboard based on role.
+     */
+    private function redirectToDashboard($user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'dosen') {
+            return redirect()->route('dosen.dashboard');
+        } else {
+            return redirect()->route('mahasiswa.dashboard');
+        }
     }
 }

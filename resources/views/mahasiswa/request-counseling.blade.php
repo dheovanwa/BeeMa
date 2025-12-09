@@ -48,8 +48,8 @@
         </div>
 
         <div style="margin: 10px 0;">
-            <label for="file">Upload Draft (PDF, max 10MB): *</label><br>
-            <input type="file" name="file" id="file" accept=".pdf" required style="margin: 5px 0;">
+            <label for="file">Upload Draft (PDF, max 10MB):</label><br>
+            <input type="file" name="file" id="file" accept=".pdf" style="margin: 5px 0;">
         </div>
 
         <div style="margin: 10px 0;">

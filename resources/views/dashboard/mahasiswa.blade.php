@@ -47,6 +47,7 @@
                     <h3>{{ $schedule->dosen->name }}</h3>
                     <p><strong>Tanggal:</strong> {{ $schedule->date->format('d/m/Y') }}</p>
                     <p><strong>Waktu:</strong> {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</p>
+                    <p><strong>Lokasi:</strong> {{ $schedule->location ?? 'Belum ditentukan' }}</p>
                     <p><strong>Kuota:</strong> {{ $schedule->quota }}</p>
                     <p><strong>Status:</strong> 
                         @if($schedule->status === 'open')

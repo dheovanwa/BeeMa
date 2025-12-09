@@ -42,11 +42,11 @@
         <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
 
         <div style="margin: 20px 0;">
-            <label for="file"><strong>Upload Draft PDF (Wajib):</strong></label><br>
+            <label for="file"><strong>Upload Draft PDF (Opsional):</strong></label><br>
             <p style="color: #666; font-size: 14px;">
                 Instruksi: Upload file draft dalam format PDF. Maksimal ukuran file 10MB.
             </p>
-            <input type="file" id="file" name="file" accept=".pdf" required style="padding: 10px; border: 2px dashed #ddd; width: 100%; max-width: 500px;">
+            <input type="file" id="file" name="file" accept=".pdf" style="padding: 10px; border: 2px dashed #ddd; width: 100%; max-width: 500px;">
         </div>
 
         <div style="margin: 20px 0;">
