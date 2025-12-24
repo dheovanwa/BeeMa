@@ -1,53 +1,271 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Jadwal - BeeMa</title>
-</head>
-<body>
-    <h1>Tambah Jadwal Baru</h1>
+@extends('layouts.app')
 
-    <div style="margin: 20px 0;">
-        <a href="{{ route('dosen.dashboard') }}">&larr; Kembali ke Dashboard</a>
-    </div>
+@section('title', (app()->getLocale() === 'en' ? 'Add Schedule' : 'Tambah Jadwal') . ' - BeeMa')
 
-    @if ($errors->any())
-        <div style="background: #f8d7da; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@section('content')
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .form-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .btn-save {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #2980b9;
+    }
+
+    .btn-cancel {
+        background: #95a5a6;
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-cancel:hover {
+        background: #7f8c8d;
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #7f8c8d;
+        margin-top: 5px;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    <a href="{{ route('dosen.dashboard') }}" class="back-link">← {{ __('messages.back') }}</a>
+
+    <h1 class="form-title">{{ app()->getLocale() === 'en' ? 'Create New Schedule' : 'Buat Jadwal Baru' }}</h1>
 
     <form method="POST" action="{{ route('dosen.schedules.store') }}">
         @csrf
 
-        <div style="margin: 10px 0;">
-            <label for="date">Tanggal:</label><br>
-            <input type="date" id="date" name="date" value="{{ old('date') }}" required style="width: 300px; padding: 5px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date">{{ __('messages.date') }} <span style="color: #e74c3c;">*</span></label>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="{{ old('date') }}"
+                    required
+                >
+                @error('date')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>{{ __('messages.status') }} <span style="color: #e74c3c;">*</span></label>
+                <select name="status" required>
+                    <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>{{ __('messages.open') }}</option>
+                    <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>{{ __('messages.closed') }}</option>
+                </select>
+                @error('status')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div style="margin: 10px 0;">
-            <label for="start_time">Waktu Mulai:</label><br>
-            <input type="time" id="start_time" name="start_time" value="{{ old('start_time') }}" required style="width: 300px; padding: 5px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="start_time">{{ app()->getLocale() === 'en' ? 'Start Time' : 'Waktu Mulai' }} <span style="color: #e74c3c;">*</span></label>
+                <input
+                    type="time"
+                    id="start_time"
+                    name="start_time"
+                    value="{{ old('start_time') }}"
+                    required
+                >
+                @error('start_time')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="end_time">{{ app()->getLocale() === 'en' ? 'End Time' : 'Waktu Selesai' }} <span style="color: #e74c3c;">*</span></label>
+                <input
+                    type="time"
+                    id="end_time"
+                    name="end_time"
+                    value="{{ old('end_time') }}"
+                    required
+                >
+                <p class="help-text">{{ app()->getLocale() === 'en' ? 'Must be after start time' : 'Harus setelah waktu mulai' }}</p>
+                @error('end_time')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div style="margin: 10px 0;">
-            <label for="end_time">Waktu Selesai:</label><br>
-            <input type="time" id="end_time" name="end_time" value="{{ old('end_time') }}" required style="width: 300px; padding: 5px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="quota">{{ __('messages.quota') }} <span style="color: #e74c3c;">*</span></label>
+                <input
+                    type="number"
+                    id="quota"
+                    name="quota"
+                    value="{{ old('quota', 1) }}"
+                    min="1"
+                    max="100"
+                    required
+                >
+                <p class="help-text">{{ app()->getLocale() === 'en' ? 'Number of students who can book this schedule' : 'Jumlah mahasiswa yang dapat booking jadwal ini' }}</p>
+                @error('quota')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="location">{{ __('messages.location') }} ({{ app()->getLocale() === 'en' ? 'Optional' : 'Opsional' }})</label>
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value="{{ old('location') }}"
+                    placeholder="{{ app()->getLocale() === 'en' ? 'e.g., Room 301' : 'Contoh: Ruang 301' }}"
+                >
+                @error('location')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div style="margin: 10px 0;">
-            <label for="quota">Kuota:</label><br>
-            <input type="number" id="quota" name="quota" value="{{ old('quota', 1) }}" min="1" required style="width: 300px; padding: 5px;">
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">{{ __('messages.save') }}</button>
+            <a href="{{ route('dosen.dashboard') }}" class="btn btn-cancel">{{ __('messages.cancel') }}</a>
         </div>
+    </form>
+</div>
 
-        <div style="margin: 10px 0;">
-            <label for="location">Lokasi:</label><br>
-            <input type="text" id="location" name="location" value="{{ old('location') }}" placeholder="Contoh: Ruang 301, Gedung A" style="width: 300px; padding: 5px;">
+<script>
+    const startTimeInput = document.getElementById('start_time');
+    const endTimeInput = document.getElementById('end_time');
+    let endTimeErrorDiv = document.querySelector('[data-end-time-error]');
+
+    // Create error div if it doesn't exist
+    if (!endTimeErrorDiv) {
+        endTimeErrorDiv = document.createElement('div');
+        endTimeErrorDiv.className = 'error';
+        endTimeErrorDiv.setAttribute('data-end-time-error', 'true');
+        endTimeErrorDiv.style.display = 'none';
+        endTimeInput.parentNode.appendChild(endTimeErrorDiv);
+    }
+
+    function validateEndTime() {
+        if (!startTimeInput.value || !endTimeInput.value) {
+            endTimeErrorDiv.style.display = 'none';
+            return;
+        }
+
+        const startTime = new Date(`2000-01-01 ${startTimeInput.value}`);
+        const endTime = new Date(`2000-01-01 ${endTimeInput.value}`);
+
+        if (endTime <= startTime) {
+            endTimeErrorDiv.textContent = "{{ app()->getLocale() === 'en' ? 'End time must be after start time' : 'Waktu selesai harus setelah waktu mulai' }}";
+            endTimeErrorDiv.style.display = 'block';
+            endTimeInput.style.borderColor = '#e74c3c';
+        } else {
+            endTimeErrorDiv.style.display = 'none';
+            endTimeInput.style.borderColor = '#bdc3c7';
+        }
+    }
+
+    startTimeInput.addEventListener('change', validateEndTime);
+    endTimeInput.addEventListener('change', validateEndTime);
+</script>
+
+@endsection
         </div>
 
         <div style="margin: 10px 0;">

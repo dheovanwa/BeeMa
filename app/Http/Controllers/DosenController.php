@@ -19,12 +19,12 @@ class DosenController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        
+
         // Get statistics
         $activeSchedules = Schedule::where('user_id', $user->id)
             ->where('status', 'open')
             ->count();
-        
+
         $totalBookings = Booking::whereHas('schedule', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->count();
@@ -33,7 +33,7 @@ class DosenController extends Controller
         $pendingCounselingRequests = CounselingRequest::where('dosen_id', $user->id)
             ->where('status', 'pending')
             ->count();
-        
+
         // Get all schedules (all statuses)
         $schedules = Schedule::where('user_id', $user->id)
             ->orderBy('date', 'asc')
@@ -46,7 +46,7 @@ class DosenController extends Controller
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->get();
-        
+
         return view('dashboard.dosen', compact('activeSchedules', 'totalBookings', 'schedules', 'pendingCounselingRequests', 'counselingRequests'));
     }
 
@@ -66,29 +66,42 @@ class DosenController extends Controller
         $request->validate([
             'date' => 'required|date|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'end_time' => 'required|date_format:H:i',
             'quota' => 'required|integer|min:1',
             'location' => 'nullable|string|max:255',
             'status' => 'required|in:open,closed',
+        ], [
+            'end_time.required' => 'End time is required',
+            'end_time.date_format' => 'End time must be in HH:MM format',
         ]);
+
+        // Validate that end_time is after start_time
+        $startTime = strtotime($request->start_time);
+        $endTime = strtotime($request->end_time);
+
+        if ($endTime <= $startTime) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['end_time' => 'End time must be after start time']);
+        }
 
         $dosenId = Auth::id();
         $date = $request->date;
         // Normalize request times to include seconds if missing
-        $startTime = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
-        $endTime = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
+        $startTimeNorm = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
+        $endTimeNorm = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
 
         // Log the incoming request date/time
         Log::info('Schedule create attempt', [
             'user_id' => $dosenId,
             'date' => $date,
-            'start_time' => $startTime,
-            'end_time' => $endTime,
+            'start_time' => $startTimeNorm,
+            'end_time' => $endTimeNorm,
         ]);
 
         // Build Unix timestamps (with date) for robust overlap checking
-        $newStart = Carbon::parse($date . ' ' . $startTime)->timestamp;
-        $newEnd = Carbon::parse($date . ' ' . $endTime)->timestamp;
+        $newStart = Carbon::parse($date . ' ' . $startTimeNorm)->timestamp;
+        $newEnd = Carbon::parse($date . ' ' . $endTimeNorm)->timestamp;
 
         // Pull same-day schedules for the dosen and compare in PHP with timestamps
         $sameDaySchedules = Schedule::where('user_id', $dosenId)
@@ -168,30 +181,43 @@ class DosenController extends Controller
         $request->validate([
             'date' => 'required|date|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'end_time' => 'required|date_format:H:i',
             'quota' => 'required|integer|min:1',
             'location' => 'nullable|string|max:255',
             'status' => 'required|in:open,closed',
+        ], [
+            'end_time.required' => 'End time is required',
+            'end_time.date_format' => 'End time must be in HH:MM format',
         ]);
+
+        // Validate that end_time is after start_time
+        $startTime = strtotime($request->start_time);
+        $endTime = strtotime($request->end_time);
+
+        if ($endTime <= $startTime) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['end_time' => 'End time must be after start time']);
+        }
 
         $dosenId = Auth::id();
         $date = $request->date;
         // Normalize request times to include seconds if missing
-        $startTime = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
-        $endTime = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
+        $startTimeNorm = strlen($request->start_time) === 5 ? ($request->start_time . ':00') : $request->start_time;
+        $endTimeNorm = strlen($request->end_time) === 5 ? ($request->end_time . ':00') : $request->end_time;
 
         // Log the incoming update request date/time
         Log::info('Schedule update attempt', [
             'user_id' => $dosenId,
             'schedule_id' => $schedule->id,
             'date' => $date,
-            'start_time' => $startTime,
-            'end_time' => $endTime,
+            'start_time' => $startTimeNorm,
+            'end_time' => $endTimeNorm,
         ]);
 
         // Build Unix timestamps (with date) for robust overlap checking
-        $newStart = Carbon::parse($date . ' ' . $startTime)->timestamp;
-        $newEnd = Carbon::parse($date . ' ' . $endTime)->timestamp;
+        $newStart = Carbon::parse($date . ' ' . $startTimeNorm)->timestamp;
+        $newEnd = Carbon::parse($date . ' ' . $endTimeNorm)->timestamp;
 
         // Pull same-day schedules for the dosen (excluding current) and compare in PHP
         $sameDaySchedules = Schedule::where('user_id', $dosenId)
@@ -265,14 +291,14 @@ class DosenController extends Controller
     public function incomingRequests()
     {
         $user = Auth::user();
-        
+
         $bookings = Booking::with(['mahasiswa', 'schedule'])
             ->whereHas('schedule', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         return view('dosen.incoming-requests', compact('bookings'));
     }
 
@@ -320,7 +346,7 @@ class DosenController extends Controller
                         'status' => 'rejected',
                         'rejection_reason' => 'Kuota untuk jadwal ini sudah penuh.',
                     ]);
-                
+
                 $message = 'Booking berhasil disetujui! Kuota penuh, booking lainnya otomatis ditolak.';
             } else {
                 $message = 'Booking berhasil disetujui!';
@@ -374,7 +400,7 @@ class DosenController extends Controller
                     'status' => 'rejected',
                     'rejection_reason' => 'Kuota untuk jadwal ini sudah penuh.',
                 ]);
-            
+
             return back()->with('success', 'Booking berhasil disetujui! Kuota penuh, booking lainnya otomatis ditolak.');
         }
 
@@ -430,8 +456,8 @@ class DosenController extends Controller
             'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
         ]);
 
-        $message = $request->status === 'approved' 
-            ? 'Permintaan bimbingan berhasil disetujui!' 
+        $message = $request->status === 'approved'
+            ? 'Permintaan bimbingan berhasil disetujui!'
             : 'Permintaan bimbingan berhasil ditolak!';
 
         return back()->with('success', $message);
