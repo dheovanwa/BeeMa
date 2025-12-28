@@ -252,8 +252,8 @@ class DosenController extends Controller
         try {
             $schedule->update([
             'date' => $date,
-            'start_time' => $startTime,
-            'end_time' => $endTime,
+            'start_time' => $startTimeNorm,
+            'end_time' => $endTimeNorm,
             'quota' => $request->quota,
             'location' => $request->location,
             'status' => $request->status,
