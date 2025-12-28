@@ -224,8 +224,8 @@
         width: 24px;
         height: 24px;
         min-width: 24px;
-        margin-right: 16px;
-        margin-left: -8px;
+        margin-right: 8px;
+        margin-left: 0px;
         cursor: pointer;
         accent-color: #3498db;
         flex-shrink: 0;
