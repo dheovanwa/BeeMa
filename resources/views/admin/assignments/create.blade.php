@@ -419,12 +419,12 @@
         <!-- Lecturer Selection -->
         <div class="form-card dosen-card">
             <h2>{{ app()->getLocale() === 'en' ? 'Select Lecturer' : 'Pilih Dosen' }} <span class="required">*</span></h2>
-            
+
             <div class="search-container">
-                <input 
-                    type="text" 
-                    id="dosen_search" 
-                    class="search-input" 
+                <input
+                    type="text"
+                    id="dosen_search"
+                    class="search-input"
                     placeholder="{{ app()->getLocale() === 'en' ? 'Search lecturers...' : 'Cari dosen...' }}"
                 >
                 <div class="search-icon">🔍</div>
@@ -439,11 +439,11 @@
                 </label>
                 @foreach($dosens as $dosen)
                     <label class="select-item dosen-option">
-                        <input 
-                            type="radio" 
-                            name="dosen_id" 
-                            value="{{ $dosen->id }}" 
-                            data-name="{{ strtolower($dosen->name) }}" 
+                        <input
+                            type="radio"
+                            name="dosen_id"
+                            value="{{ $dosen->id }}"
+                            data-name="{{ strtolower($dosen->name) }}"
                             data-email="{{ strtolower($dosen->email) }}"
                             data-full-name="{{ $dosen->name }}"
                             data-full-email="{{ $dosen->email }}"
@@ -469,12 +469,12 @@
         <!-- Student Selection -->
         <div class="form-card mahasiswa-card">
             <h2>{{ app()->getLocale() === 'en' ? 'Select Student' : 'Pilih Mahasiswa' }} <span class="required">*</span></h2>
-            
+
             <div class="search-container">
-                <input 
-                    type="text" 
-                    id="mahasiswa_search" 
-                    class="search-input" 
+                <input
+                    type="text"
+                    id="mahasiswa_search"
+                    class="search-input"
                     placeholder="{{ app()->getLocale() === 'en' ? 'Search students...' : 'Cari mahasiswa...' }}"
                 >
                 <div class="search-icon">🔍</div>
@@ -489,11 +489,11 @@
                 </label>
                 @foreach($mahasiswas as $mahasiswa)
                     <label class="select-item mahasiswa-option">
-                        <input 
-                            type="radio" 
-                            name="mahasiswa_id" 
-                            value="{{ $mahasiswa->id }}" 
-                            data-name="{{ strtolower($mahasiswa->name) }}" 
+                        <input
+                            type="radio"
+                            name="mahasiswa_id"
+                            value="{{ $mahasiswa->id }}"
+                            data-name="{{ strtolower($mahasiswa->name) }}"
                             data-email="{{ strtolower($mahasiswa->email) }}"
                             data-full-name="{{ $mahasiswa->name }}"
                             data-full-email="{{ $mahasiswa->email }}"
