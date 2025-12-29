@@ -25,7 +25,7 @@ class DosenController extends Controller
             ->where('status', 'open')
             ->count();
 
-        $totalBookings = Booking::whereHas('schedule', function($query) use ($user) {
+        $totalBookings = Booking::where('status', 'pending')->whereHas('schedule', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->count();
 
@@ -293,6 +293,7 @@ class DosenController extends Controller
         $user = Auth::user();
 
         $bookings = Booking::with(['mahasiswa', 'schedule'])
+            ->where('status', 'pending')
             ->whereHas('schedule', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             })

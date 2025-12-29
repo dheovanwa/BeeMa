@@ -207,7 +207,7 @@
                     <td>
                         @if($booking->status === 'pending')
                             <span class="badge-status badge-pending">{{ __('messages.pending') }}</span>
-                        @elseif($booking->status === 'accepted')
+                        @elseif($booking->status === 'approved')
                             <span class="badge-status badge-accepted">{{ __('messages.accepted') }}</span>
                         @else
                             <span class="badge-status badge-rejected">{{ __('messages.rejected') }}</span>

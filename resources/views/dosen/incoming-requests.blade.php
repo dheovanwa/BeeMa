@@ -234,15 +234,10 @@
                     <form method="POST" action="{{ route('dosen.booking.status', $booking->id) }}" style="flex: 1;">
                         @csrf
                         @method('PATCH')
-                        <input type="hidden" name="status" value="accepted">
+                        <input type="hidden" name="status" value="approved">
                         <button type="submit" class="btn-action btn-accept">{{ __('messages.accept') }}</button>
                     </form>
-                    <form method="POST" action="{{ route('dosen.booking.status', $booking->id) }}" style="flex: 1;">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="status" value="rejected">
-                        <button type="submit" class="btn-action btn-reject">{{ __('messages.reject') }}</button>
-                    </form>
+                    <button type="button" class="btn-action btn-reject" onclick="openRejectModal({{ $booking->id }})">{{ __('messages.reject') }}</button>
                 </div>
             </div>
         @endforeach
@@ -254,5 +249,62 @@
         <a href="{{ route('dosen.dashboard') }}">{{ app()->getLocale() === 'en' ? 'Back to Dashboard' : 'Kembali ke Dashboard' }}</a>
     </div>
 @endif
+
+<!-- Rejection Reason Modal -->
+<div id="rejectModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 10px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <h2 style="color: #2c3e50; margin-top: 0; font-size: 20px;">{{ app()->getLocale() === 'en' ? 'Rejection Reason' : 'Alasan Penolakan' }}</h2>
+        <p style="color: #7f8c8d; margin-bottom: 15px;">{{ app()->getLocale() === 'en' ? 'Please provide a reason for rejecting this booking request.' : 'Silakan berikan alasan untuk menolak permintaan booking ini.' }}</p>
+
+        <form method="POST" id="rejectForm" style="display: flex; flex-direction: column; gap: 15px;">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="rejected">
+            <input type="hidden" id="bookingIdInput" name="booking_id">
+
+            <textarea
+                name="rejection_reason"
+                id="rejectionReason"
+                placeholder="{{ app()->getLocale() === 'en' ? 'Enter your rejection reason...' : 'Masukkan alasan penolakan Anda...' }}"
+                style="padding: 12px; border: 1px solid #bdc3c7; border-radius: 5px; font-family: inherit; font-size: 14px; resize: vertical; min-height: 120px;"
+                required
+            ></textarea>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="button" onclick="closeRejectModal()" style="flex: 1; padding: 10px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s;">{{ app()->getLocale() === 'en' ? 'Cancel' : 'Batal' }}</button>
+                <button type="submit" style="flex: 1; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s;">{{ app()->getLocale() === 'en' ? 'Reject' : 'Tolak' }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openRejectModal(bookingId) {
+        document.getElementById('rejectModal').style.display = 'flex';
+        document.getElementById('bookingIdInput').value = bookingId;
+        document.getElementById('rejectionReason').focus();
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectModal').style.display = 'none';
+        document.getElementById('rejectionReason').value = '';
+    }
+
+    document.getElementById('rejectForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const bookingId = document.getElementById('bookingIdInput').value;
+        const action = "{{ route('dosen.booking.status', ':id') }}".replace(':id', bookingId);
+
+        this.action = action;
+        this.submit();
+    });
+
+    // Close modal when clicking outside of it
+    document.getElementById('rejectModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeRejectModal();
+        }
+    });
+</script>
 
 @endsection
