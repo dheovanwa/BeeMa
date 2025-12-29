@@ -27,31 +27,59 @@ class AdminController extends Controller
     {
         $dosens = User::where('role', 'dosen')->get();
         $mahasiswas = User::where('role', 'mahasiswa')->get();
-        return view('admin.assignments.create', compact('dosens', 'mahasiswas'));
+
+        // Get assigned students for each dosen
+        $assignedStudentsByDosen = [];
+        foreach ($dosens as $dosen) {
+            $assignedStudentsByDosen[$dosen->id] = Assignment::where('dosen_id', $dosen->id)
+                ->pluck('mahasiswa_id')
+                ->toArray();
+        }
+
+        return view('admin.assignments.create', compact('dosens', 'mahasiswas', 'assignedStudentsByDosen'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'dosen_id' => 'required|exists:users,id',
-            'mahasiswa_id' => 'required|exists:users,id',
+            'mahasiswa_id' => 'required|array|min:1',
+            'mahasiswa_id.*' => 'exists:users,id',
+        ], [
+            'mahasiswa_id.required' => 'Please select at least one student.',
+            'mahasiswa_id.min' => 'Please select at least one student.',
         ]);
 
-        // Check if assignment already exists
-        $existingAssignment = Assignment::where('dosen_id', $request->dosen_id)
-            ->where('mahasiswa_id', $request->mahasiswa_id)
-            ->first();
+        $dosenId = $request->dosen_id;
+        $mahasiswaIds = $request->mahasiswa_id;
+        $createdCount = 0;
+        $skippedCount = 0;
 
-        if ($existingAssignment) {
-            return back()->withErrors(['error' => 'This assignment already exists.'])->withInput();
+        foreach ($mahasiswaIds as $mahasiswaId) {
+            // Check if assignment already exists
+            $existingAssignment = Assignment::where('dosen_id', $dosenId)
+                ->where('mahasiswa_id', $mahasiswaId)
+                ->first();
+
+            if (!$existingAssignment) {
+                Assignment::create([
+                    'dosen_id' => $dosenId,
+                    'mahasiswa_id' => $mahasiswaId,
+                ]);
+                $createdCount++;
+            } else {
+                $skippedCount++;
+            }
         }
 
-        Assignment::create([
-            'dosen_id' => $request->dosen_id,
-            'mahasiswa_id' => $request->mahasiswa_id,
-        ]);
+        $message = "Created $createdCount assignment" . ($createdCount !== 1 ? 's' : '');
+        if ($skippedCount > 0) {
+            $message .= " ($skippedCount already existed).";
+        } else {
+            $message .= '.';
+        }
 
-        return redirect()->route('admin.assignments.index')->with('success', 'Assignment created successfully.');
+        return redirect()->route('admin.assignments.index')->with('success', $message);
     }
 
     public function destroy(Assignment $assignment)

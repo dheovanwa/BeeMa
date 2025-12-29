@@ -448,7 +448,6 @@
                             data-full-name="{{ $dosen->name }}"
                             data-full-email="{{ $dosen->email }}"
                             class="dosen-input"
-                            onchange="updateDosenPreview()"
                         >
                         <div class="select-item-text">
                             <span class="select-item-name">{{ $dosen->name }}</span>
@@ -488,17 +487,23 @@
                     </div>
                 </label>
                 @foreach($mahasiswas as $mahasiswa)
-                    <label class="select-item mahasiswa-option">
+                    @php
+                        $isAssigned = in_array($mahasiswa->id, $assignedStudentsByDosen[$selectedDosenId ?? 0] ?? []);
+                    @endphp
+                    <label class="select-item mahasiswa-option" data-mahasiswa-id="{{ $mahasiswa->id }}" style="{{ $isAssigned ? 'position: relative; opacity: 0.5; pointer-events: none;' : '' }}">
+                        @if($isAssigned)
+                            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(52,152,219,0.75); border-radius: 6px; font-weight: bold; color: white; font-size: 13px; backdrop-filter: blur(2px); padding: 10px; text-align: center;">{{ __('messages.assigned_student') }}</div>
+                        @endif
                         <input
-                            type="radio"
-                            name="mahasiswa_id"
+                            type="checkbox"
+                            name="mahasiswa_id[]"
                             value="{{ $mahasiswa->id }}"
                             data-name="{{ strtolower($mahasiswa->name) }}"
                             data-email="{{ strtolower($mahasiswa->email) }}"
                             data-full-name="{{ $mahasiswa->name }}"
                             data-full-email="{{ $mahasiswa->email }}"
                             class="mahasiswa-input"
-                            onchange="updateMahasiswaPreview()"
+                            {{ $isAssigned ? 'disabled' : '' }}
                         >
                         <div class="select-item-text">
                             <span class="select-item-name">{{ $mahasiswa->name }}</span>
@@ -529,6 +534,10 @@
 </form>
 
 <script>
+    // Make assigned students data available globally
+    window.assignedStudentsByDosen = @json($assignedStudentsByDosen);
+    window.assignedStudentMessage = '{{ __('messages.assigned_student') }}';
+
     // Search functionality for Dosen
     document.getElementById('dosen_search').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
@@ -581,26 +590,133 @@
         }
     }
 
-    // Update Mahasiswa Preview
+    // Update Mahasiswa Preview (for multiple checkboxes)
     function updateMahasiswaPreview() {
-        const checked = document.querySelector('.mahasiswa-input:checked');
+        const checkedItems = document.querySelectorAll('.mahasiswa-input:checked');
         const preview = document.getElementById('mahasiswaPreview');
 
-        if (!checked) {
+        if (checkedItems.length === 0) {
             preview.innerHTML = '<span class="preview-name">-</span>';
             preview.className = 'preview-item empty';
         } else {
-            const name = checked.getAttribute('data-full-name');
-            const email = checked.getAttribute('data-full-email');
-            preview.innerHTML = `<span class="preview-name">${name}</span><span class="preview-email">${email}</span>`;
+            let html = '';
+            checkedItems.forEach((item, index) => {
+                const name = item.getAttribute('data-full-name');
+                const email = item.getAttribute('data-full-email');
+                html += `<div style="background: white; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #3498db; margin-bottom: ${index < checkedItems.length - 1 ? '8px' : '0'};"><span style="font-weight: bold; color: #2c3e50; display: block;">${name}</span><span style="color: #7f8c8d; font-size: 12px; display: block; margin-top: 3px;">${email}</span></div>`;
+            });
+            preview.innerHTML = html;
             preview.className = 'preview-item';
         }
     }
+
+    // Update assigned students blocking when dosen changes
+    function updateMahasiswaAssignedStatus() {
+        const selectedDosen = document.querySelector('.dosen-input:checked');
+        const mahasiswaItems = document.querySelectorAll('.mahasiswa-option');
+
+        if (!selectedDosen) {
+            // No dosen selected, disable all
+            mahasiswaItems.forEach(item => {
+                item.style.position = 'relative';
+                item.style.opacity = '0.5';
+                item.style.pointerEvents = 'none';
+                let blurDiv = item.querySelector('.assigned-blur-overlay');
+                if (!blurDiv) {
+                    blurDiv = document.createElement('div');
+                    blurDiv.className = 'assigned-blur-overlay';
+                    blurDiv.style.position = 'absolute';
+                    blurDiv.style.inset = '0';
+                    blurDiv.style.display = 'flex';
+                    blurDiv.style.alignItems = 'center';
+                    blurDiv.style.justifyContent = 'center';
+                    blurDiv.style.background = 'rgba(52,152,219,0.75)';
+                    blurDiv.style.borderRadius = '6px';
+                    blurDiv.style.fontWeight = 'bold';
+                    blurDiv.style.color = 'white';
+                    blurDiv.style.fontSize = '13px';
+                    blurDiv.style.backdropFilter = 'blur(2px)';
+                    blurDiv.style.padding = '10px';
+                    blurDiv.style.textAlign = 'center';
+                    blurDiv.textContent = window.assignedStudentMessage;
+                    item.appendChild(blurDiv);
+                } else {
+                    blurDiv.style.display = 'flex';
+                }
+            });
+            return;
+        }
+
+        // Fetch assigned students for this dosen
+        const dosenId = selectedDosen.value;
+        const assignedStudents = window.assignedStudentsByDosen[dosenId] || [];
+
+        mahasiswaItems.forEach(item => {
+            const mahasiswaId = parseInt(item.getAttribute('data-mahasiswa-id'));
+            const isAssigned = assignedStudents.includes(mahasiswaId);
+            const checkbox = item.querySelector('.mahasiswa-input');
+            let blurDiv = item.querySelector('.assigned-blur-overlay');
+
+            if (isAssigned) {
+                item.style.position = 'relative';
+                item.style.opacity = '0.5';
+                item.style.pointerEvents = 'none';
+                checkbox.disabled = true;
+
+                if (!blurDiv) {
+                    blurDiv = document.createElement('div');
+                    blurDiv.className = 'assigned-blur-overlay';
+                    blurDiv.style.position = 'absolute';
+                    blurDiv.style.inset = '0';
+                    blurDiv.style.display = 'flex';
+                    blurDiv.style.alignItems = 'center';
+                    blurDiv.style.justifyContent = 'center';
+                    blurDiv.style.background = 'rgba(52,152,219,0.75)';
+                    blurDiv.style.borderRadius = '6px';
+                    blurDiv.style.fontWeight = 'bold';
+                    blurDiv.style.color = 'white';
+                    blurDiv.style.fontSize = '13px';
+                    blurDiv.style.backdropFilter = 'blur(2px)';
+                    blurDiv.style.padding = '10px';
+                    blurDiv.style.textAlign = 'center';
+                    blurDiv.textContent = window.assignedStudentMessage;
+                    item.appendChild(blurDiv);
+                } else {
+                    blurDiv.style.display = 'flex';
+                }
+
+                checkbox.checked = false;
+            } else {
+                item.style.opacity = '1';
+                item.style.pointerEvents = 'auto';
+                checkbox.disabled = false;
+                if (blurDiv) blurDiv.style.display = 'none';
+            }
+        });
+
+        updateMahasiswaPreview();
+    }
+
+    // Update dosen selection to trigger mahasiswa status update
+    document.querySelectorAll('.dosen-input').forEach(input => {
+        input.addEventListener('change', function() {
+            updateDosenPreview();
+            updateMahasiswaAssignedStatus();
+        });
+    });
+
+    // Update mahasiswa checkbox changes to update preview
+    document.querySelectorAll('.mahasiswa-input').forEach(input => {
+        input.addEventListener('change', function() {
+            updateMahasiswaPreview();
+        });
+    });
 
     // Initialize previews on page load
     document.addEventListener('DOMContentLoaded', function() {
         updateDosenPreview();
         updateMahasiswaPreview();
+        updateMahasiswaAssignedStatus();
     });
 </script>
 

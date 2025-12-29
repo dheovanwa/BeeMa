@@ -48,6 +48,7 @@ return [
     'active' => 'Aktif',
     'inactive' => 'Tidak Aktif',
     'add_schedule' => 'Tambah Jadwal',
+    'assigned_student' => 'Mahasiswa Ini Telah Ditugaskan',
     'my_bookings' => 'Booking Saya',
     'incoming_requests' => 'Permintaan Masuk',
     'available_schedules' => 'Jadwal Tersedia',

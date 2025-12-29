@@ -48,6 +48,7 @@ return [
     'active' => 'Active',
     'inactive' => 'Inactive',
     'add_schedule' => 'Add Schedule',
+    'assigned_student' => 'This Student has been Assigned',
     'my_bookings' => 'My Bookings',
     'incoming_requests' => 'Incoming Requests',
     'available_schedules' => 'Available Schedules',
