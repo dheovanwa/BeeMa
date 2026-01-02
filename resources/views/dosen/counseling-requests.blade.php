@@ -77,6 +77,146 @@
         background: #f8f9fa;
     }
 
+    .request-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .request-card {
+        background: white;
+        border: 2px solid #ecf0f1;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        border-left: 5px solid #17a2b8;
+    }
+
+    .request-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        border-color: #17a2b8;
+    }
+
+    .request-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+        gap: 10px;
+    }
+
+    .request-card-student {
+        flex: 1;
+    }
+
+    .request-card-student strong {
+        display: block;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 3px;
+    }
+
+    .request-card-student small {
+        color: #7f8c8d;
+        display: block;
+    }
+
+    .request-card-status {
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        white-space: nowrap;
+    }
+
+    .request-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .request-card-row {
+        font-size: 13px;
+    }
+
+    .request-card-label {
+        color: #7f8c8d;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .request-card-value {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .request-card-footer {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding-top: 15px;
+        border-top: 1px solid #ecf0f1;
+    }
+
+    .request-card-footer form,
+    .request-card-footer a {
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .request-card-footer button {
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .request-card-footer .btn-approve {
+        background: #27ae60;
+        color: white;
+    }
+
+    .request-card-footer .btn-approve:hover {
+        background: #229954;
+    }
+
+    .request-card-footer .btn-reject {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .request-card-footer .btn-reject:hover {
+        background: #c0392b;
+    }
+
+    .request-card-footer .btn-download {
+        background: #3498db;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .request-card-footer .btn-download:hover {
+        background: #2980b9;
+    }
+
     .badge {
         display: inline-block;
         padding: 6px 12px;
@@ -279,64 +419,60 @@
 @endif
 
 @if($requests->count() > 0)
-    <table class="request-table">
-        <thead>
-            <tr>
-                <th>{{ app()->getLocale() === 'en' ? 'Student' : 'Mahasiswa' }}</th>
-                <th>{{ __('messages.date') }} & {{ app()->getLocale() === 'en' ? 'Time' : 'Waktu' }}</th>
-                <th>{{ __('messages.message') }}</th>
-                <th>{{ __('messages.file') }}</th>
-                <th>{{ __('messages.status') }}</th>
-                <th>{{ app()->getLocale() === 'en' ? 'Requested' : 'Permintaan' }}</th>
-                <th>{{ __('messages.action') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($requests as $req)
-                <tr>
-                    <td>
-                        <div class="student-info">
-                            <strong>{{ $req->mahasiswa->name }}</strong>
-                            <small>{{ $req->mahasiswa->email }}</small>
-                        </div>
-                    </td>
-                    <td>
-                        <strong>{{ $req->date->format('d M Y') }}</strong><br>
-                        {{ \Carbon\Carbon::parse($req->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($req->end_time)->format('H:i') }}
-                    </td>
-                    <td>{{ Str::limit($req->message ?? '-', 30) }}</td>
-                    <td>
-                        @if($req->file_path)
-                            <a href="{{ route('dosen.counseling.download', $req->id) }}" class="action-btn btn-download">{{ __('messages.download') }}</a>
-                        @else
-                            <span style="color: #999;">-</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($req->status === 'pending')
-                            <span class="badge badge-pending">{{ __('messages.pending') }}</span>
-                        @elseif($req->status === 'approved')
-                            <span class="badge badge-approved">{{ __('messages.accepted') }}</span>
-                        @else
-                            <span class="badge badge-rejected">{{ __('messages.rejected') }}</span>
-                        @endif
-                    </td>
-                    <td>{{ $req->created_at->format('d/m/Y H:i') }}</td>
-                    <td>
-                        @if($req->status === 'pending')
-                            <form action="{{ route('dosen.counseling.update-status', $req->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status" value="approved">
-                                <button type="submit" class="action-btn btn-approve">{{ __('messages.accept') }}</button>
-                            </form>
+    <div class="request-cards">
+        @foreach($requests as $req)
+            <div class="request-card">
+                <div class="request-card-header">
+                    <div class="request-card-student">
+                        <strong>{{ $req->mahasiswa->name }}</strong>
+                        <small>{{ $req->mahasiswa->email }}</small>
+                    </div>
+                    @if($req->status === 'pending')
+                        <span class="request-card-status badge badge-pending">{{ __('messages.pending') }}</span>
+                    @elseif($req->status === 'approved')
+                        <span class="request-card-status badge badge-approved">{{ __('messages.accepted') }}</span>
+                    @else
+                        <span class="request-card-status badge badge-rejected">{{ __('messages.rejected') }}</span>
+                    @endif
+                </div>
 
-                            <button onclick="openRejectModal({{ $req->id }})" class="action-btn btn-reject">{{ __('messages.reject') }}</button>
-                        @else
-                            <span style="color: #999;">-</span>
-                        @endif
-                    </td>
-                </tr>
+                <div class="request-card-body">
+                    <div class="request-card-row">
+                        <span class="request-card-label">{{ __('messages.date') }} & {{ app()->getLocale() === 'en' ? 'Time' : 'Waktu' }}</span>
+                        <span class="request-card-value">
+                            {{ $req->date->format('d M Y') }} | {{ \Carbon\Carbon::parse($req->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($req->end_time)->format('H:i') }}
+                        </span>
+                    </div>
+
+                    <div class="request-card-row">
+                        <span class="request-card-label">{{ __('messages.message') }}</span>
+                        <span class="request-card-value">{{ $req->message ?? '-' }}</span>
+                    </div>
+
+                    <div class="request-card-row">
+                        <span class="request-card-label">{{ app()->getLocale() === 'en' ? 'Requested' : 'Permintaan' }}</span>
+                        <span class="request-card-value">{{ $req->created_at->format('d/m/Y H:i') }}</span>
+                    </div>
+                </div>
+
+                <div class="request-card-footer">
+                    @if($req->file_path)
+                        <a href="{{ route('dosen.counseling.download', $req->id) }}" class="btn-download">{{ __('messages.download') }}</a>
+                    @endif
+
+                    @if($req->status === 'pending')
+                        <form action="{{ route('dosen.counseling.update-status', $req->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="approved">
+                            <button type="submit" class="btn-approve">{{ __('messages.accept') }}</button>
+                        </form>
+
+                        <button onclick="openRejectModal({{ $req->id }})" class="btn-reject">{{ __('messages.reject') }}</button>
+                    @else
+                        <span style="color: #999; flex: 1;">-</span>
+                    @endif
+                </div>
 
                 <!-- Reject Modal -->
                 <div id="rejectModal{{ $req->id }}" class="modal">
@@ -360,9 +496,9 @@
                         </form>
                     </div>
                 </div>
-            @endforeach
-        </tbody>
-    </table>
+            </div>
+        @endforeach
+    </div>
 @else
     <div class="empty-state">
         <h2>{{ app()->getLocale() === 'en' ? 'No Counseling Requests' : 'Tidak Ada Permintaan Konsultasi' }}</h2>

@@ -71,4 +71,6 @@ return [
     'assigned_dosen' => 'Dosen yang Ditugaskan',
     'quota_filled' => 'Kuota Terisi',
     'joining_students' => 'Mahasiswa Bergabung',
+    'search' => 'Cari',
+    'reset' => 'Reset',
 ];

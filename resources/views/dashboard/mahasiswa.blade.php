@@ -217,7 +217,7 @@
 
                 <div class="schedule-card-info">
                     <label>👥 {{ __('messages.quota') }}:</label>
-                    <value>{{ $schedule->quota }}</value>
+                    <value>{{ $schedule->bookings->where('status', 'approved')->count() }} / {{ $schedule->quota }}</value>
                 </div>
 
                 <div class="schedule-card-actions">

@@ -17,9 +17,29 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('totalDosen', 'totalMahasiswa', 'totalAssignments'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $assignments = Assignment::with(['dosen', 'mahasiswa'])->get();
+        $query = Assignment::with(['dosen', 'mahasiswa']);
+
+        // Filter by lecturer name/email
+        if ($request->filled('lecturer')) {
+            $lecturerFilter = $request->lecturer;
+            $query->whereHas('dosen', function ($q) use ($lecturerFilter) {
+                $q->where('name', 'like', "%$lecturerFilter%")
+                  ->orWhere('email', 'like', "%$lecturerFilter%");
+            });
+        }
+
+        // Filter by student name/email
+        if ($request->filled('student')) {
+            $studentFilter = $request->student;
+            $query->whereHas('mahasiswa', function ($q) use ($studentFilter) {
+                $q->where('name', 'like', "%$studentFilter%")
+                  ->orWhere('email', 'like', "%$studentFilter%");
+            });
+        }
+
+        $assignments = $query->get();
         return view('admin.assignments.index', compact('assignments'));
     }
 

@@ -198,7 +198,7 @@
             </div>
             <div class="detail-item">
                 <label>👥 {{ __('messages.quota') }}:</label>
-                <value>{{ $schedule->quota }}</value>
+                <value>{{ $schedule->bookings->where('status', 'approved')->count() }} / {{ $schedule->quota }}</value>
             </div>
         </div>
     </div>

@@ -96,21 +96,130 @@
         background: #f8f9fa;
     }
 
-    .badge-type {
+    .schedule-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .schedule-card {
+        background: white;
+        border: 2px solid #ecf0f1;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+    }
+
+    .schedule-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        border-color: #3498db;
+    }
+
+    .schedule-card.request-card {
+        border-left: 5px solid #17a2b8;
+        background: #f0f8ff;
+    }
+
+    .schedule-card.manual-card {
+        border-left: 5px solid #3498db;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+    }
+
+    .card-type-badge {
+        font-weight: bold;
+        color: white;
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 12px;
-        font-weight: bold;
-        color: white;
-        display: inline-block;
     }
 
-    .badge-manual {
+    .card-type-badge.manual {
         background: #3498db;
     }
 
-    .badge-request {
+    .card-type-badge.request {
         background: #17a2b8;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .card-row {
+        font-size: 13px;
+    }
+
+    .card-label {
+        color: #7f8c8d;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .card-value {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .card-student {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    .card-student strong {
+        display: block;
+        color: #2c3e50;
+        margin-bottom: 3px;
+    }
+
+    .card-student small {
+        color: #7f8c8d;
+    }
+
+    .card-footer {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding-top: 15px;
+        border-top: 1px solid #ecf0f1;
+    }
+
+    .card-footer a,
+    .card-footer form {
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .card-footer button {
+        width: 100%;
+        padding: 8px 12px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .card-footer button:hover {
+        background: #c82333;
     }
 
     .badge-status {
@@ -287,83 +396,84 @@
         ]);
     @endphp
 
-    <table class="schedule-table">
-        <thead>
-            <tr>
-                <th>{{ app()->getLocale() === 'en' ? 'Type' : 'Tipe' }}</th>
-                <th>{{ app()->getLocale() === 'en' ? 'Student / Info' : 'Mahasiswa / Info' }}</th>
-                <th>{{ __('messages.date') }}</th>
-                <th>{{ app()->getLocale() === 'en' ? 'Time' : 'Waktu' }}</th>
-                <th>{{ __('messages.location') }}</th>
-                <th>{{ __('messages.quota') }}</th>
-                <th>{{ __('messages.status') }}</th>
-                <th>{{ __('messages.action') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($allSchedules as $item)
-                @if($item['type'] === 'manual')
-                    @php $schedule = $item['data']; @endphp
-                    <tr>
-                        <td><span class="badge-type badge-manual">{{ app()->getLocale() === 'en' ? 'Manual' : 'Manual' }}</span></td>
-                        <td>-</td>
-                        <td>{{ $schedule->date->format('d M Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</td>
-                        <td>{{ $schedule->location ?? '-' }}</td>
-                        <td>{{ $schedule->quota }}</td>
-                        <td>
-                            @if($schedule->status === 'open')
-                                <span class="badge-status badge-open">{{ __('messages.open') }}</span>
-                            @else
-                                <span class="badge-status badge-closed">{{ __('messages.closed') }}</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="action-links">
-                                <a href="{{ route('dosen.schedules.edit', $schedule->id) }}" class="btn btn-sm btn-warning">{{ __('messages.edit') }}</a>
-                                <form method="POST" action="{{ route('dosen.schedules.destroy', $schedule->id) }}" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return confirm('{{ app()->getLocale() === 'en' ? 'Are you sure?' : 'Yakin ingin menghapus?' }}')">{{ __('messages.delete') }}</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @else
-                    @php $req = $item['data']; @endphp
-                    <tr style="background: #f0f8ff;">
-                        <td><span class="badge-type badge-request">{{ app()->getLocale() === 'en' ? 'Request' : 'Request' }}</span></td>
-                        <td>
-                            <div class="student-info">
-                                <strong>{{ $req->mahasiswa->name }}</strong>
-                                <small>{{ $req->mahasiswa->email }}</small>
-                            </div>
-                        </td>
-                        <td>{{ $req->date->format('d M Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($req->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($req->end_time)->format('H:i') }}</td>
-                        <td>-</td>
-                        <td>1</td>
-                        <td>
-                            @if($req->status === 'pending')
-                                <span class="badge-status badge-pending">{{ __('messages.pending') }}</span>
-                            @elseif($req->status === 'approved')
-                                <span class="badge-status badge-approved">{{ __('messages.approved') }}</span>
-                            @else
-                                <span class="badge-status badge-rejected">{{ __('messages.rejected') }}</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($req->file_path)
-                                <a href="{{ route('dosen.counseling.download', $req->id) }}" class="btn btn-sm btn-primary">{{ __('messages.download') }}</a>
-                            @else
-                                <span style="color: #999; font-size: 12px;">{{ app()->getLocale() === 'en' ? 'No file' : 'Tidak ada file' }}</span>
-                            @endif
-                        </td>
-                    </tr>
-                @endif
-            @endforeach
-        </tbody>
-    </table>
+    <div class="schedule-cards">
+        @foreach($allSchedules as $item)
+            @if($item['type'] === 'manual')
+                @php $schedule = $item['data']; @endphp
+                <div class="schedule-card manual-card">
+                    <div class="card-header">
+                        <span class="card-type-badge manual">{{ app()->getLocale() === 'en' ? 'Manual' : 'Manual' }}</span>
+                        @if($schedule->status === 'open')
+                            <span class="badge-status badge-open">{{ __('messages.open') }}</span>
+                        @else
+                            <span class="badge-status badge-closed">{{ __('messages.closed') }}</span>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <div class="card-row">
+                            <span class="card-label">{{ __('messages.date') }}</span>
+                            <span class="card-value">{{ $schedule->date->format('d M Y') }}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">{{ app()->getLocale() === 'en' ? 'Time' : 'Waktu' }}</span>
+                            <span class="card-value">{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">{{ __('messages.location') }}</span>
+                            <span class="card-value">{{ $schedule->location ?? '-' }}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">{{ __('messages.quota') }}</span>
+                            <span class="card-value">{{ $schedule->quota }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('dosen.schedules.edit', $schedule->id) }}" class="btn btn-sm btn-warning" style="padding: 8px 12px; text-align: center; text-decoration: none; background: #ffc107; color: white; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ __('messages.edit') }}</a>
+                        <form method="POST" action="{{ route('dosen.schedules.destroy', $schedule->id) }}" style="flex: 1; min-width: 80px;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" onclick="return confirm('{{ app()->getLocale() === 'en' ? 'Are you sure?' : 'Yakin ingin menghapus?' }}')">{{ __('messages.delete') }}</button>
+                        </form>
+                    </div>
+                </div>
+            @else
+                @php $req = $item['data']; @endphp
+                <div class="schedule-card request-card">
+                    <div class="card-header">
+                        <span class="card-type-badge request">{{ app()->getLocale() === 'en' ? 'Request' : 'Request' }}</span>
+                        @if($req->status === 'pending')
+                            <span class="badge-status badge-pending">{{ __('messages.pending') }}</span>
+                        @elseif($req->status === 'approved')
+                            <span class="badge-status badge-approved">{{ __('messages.approved') }}</span>
+                        @else
+                            <span class="badge-status badge-rejected">{{ __('messages.rejected') }}</span>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <div class="card-student">
+                            <strong>{{ $req->mahasiswa->name }}</strong>
+                            <small>{{ $req->mahasiswa->email }}</small>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">{{ __('messages.date') }}</span>
+                            <span class="card-value">{{ $req->date->format('d M Y') }}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">{{ app()->getLocale() === 'en' ? 'Time' : 'Waktu' }}</span>
+                            <span class="card-value">{{ \Carbon\Carbon::parse($req->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($req->end_time)->format('H:i') }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        @if($req->file_path)
+                            <a href="{{ route('dosen.counseling.download', $req->id) }}" class="btn btn-sm btn-primary" style="padding: 8px 12px; text-align: center; text-decoration: none; background: #3498db; color: white; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ __('messages.download') }}</a>
+                        @else
+                            <span style="color: #999; font-size: 12px; padding: 8px 12px;">{{ app()->getLocale() === 'en' ? 'No file' : 'Tidak ada file' }}</span>
+                        @endif
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    </div>
 @else
     <div class="empty-state">
         <h3>{{ app()->getLocale() === 'en' ? 'No Schedules Yet' : 'Belum Ada Jadwal' }}</h3>

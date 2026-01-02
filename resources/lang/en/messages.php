@@ -71,4 +71,6 @@ return [
     'assigned_dosen' => 'Assigned Lecturer',
     'quota_filled' => 'Quota Filled',
     'joining_students' => 'Joining Students',
+    'search' => 'Search',
+    'reset' => 'Reset',
 ];
