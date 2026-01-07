@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BeeMa - Portal Manajemen Bimbingan & Konsultasi</title>
+    @vite(['resources/css/beema.css'])
+
     <style>
         * {
             margin: 0;
@@ -13,14 +15,14 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #F9FAFB 0%, #ACD7EF 100%);
             min-height: 100vh;
+            min-width: 100vg;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-
         .container {
             max-width: 1000px;
             background: white;
