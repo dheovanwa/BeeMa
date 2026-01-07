@@ -144,6 +144,20 @@
         font-size: 13px;
     }
 
+    .request-card-file-row {
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .request-card-file-info {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+    }
+
     .request-card-label {
         color: #7f8c8d;
         font-weight: 600;
@@ -156,22 +170,62 @@
         font-weight: 500;
     }
 
+    .request-card-filename {
+        color: #2c3e50;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
+    .request-card-file-icon {
+        color: #3498db;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.3s;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+    }
+
+    .request-card-file-icon:hover {
+        color: #2980b9;
+    }
+
     .request-card-footer {
         display: flex;
         gap: 8px;
-        flex-wrap: wrap;
         padding-top: 15px;
         border-top: 1px solid #ecf0f1;
     }
 
-    .request-card-footer form,
-    .request-card-footer a {
-        flex: 1;
-        min-width: 80px;
+    .request-card-actions {
+        display: flex;
+        gap: 8px;
+        width: 100%;
     }
 
-    .request-card-footer button {
+    .request-card-actions form,
+    .request-card-actions button {
+        flex: 1;
+    }
+
+    .request-card-actions form button {
         width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .request-card-actions button {
         padding: 8px 12px;
         border: none;
         border-radius: 5px;
@@ -449,6 +503,21 @@
                         <span class="request-card-value">{{ $req->message ?? '-' }}</span>
                     </div>
 
+                    @if($req->file_path)
+                        <div class="request-card-file-row">
+                            <div class="request-card-file-info">
+                                <span class="request-card-label">{{ __('messages.file') }}</span>
+                                <span class="request-card-filename" title="{{ basename($req->file_path) }}">{{ basename($req->file_path) }}</span>
+                            </div>
+                            <a href="{{ route('dosen.counseling.download', $req->id) }}" class="request-card-file-icon" title="{{ __('messages.download') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    @endif
+
                     <div class="request-card-row">
                         <span class="request-card-label">{{ app()->getLocale() === 'en' ? 'Requested' : 'Permintaan' }}</span>
                         <span class="request-card-value">{{ $req->created_at->format('d/m/Y H:i') }}</span>
@@ -456,21 +525,19 @@
                 </div>
 
                 <div class="request-card-footer">
-                    @if($req->file_path)
-                        <a href="{{ route('dosen.counseling.download', $req->id) }}" class="btn-download">{{ __('messages.download') }}</a>
-                    @endif
-
                     @if($req->status === 'pending')
-                        <form action="{{ route('dosen.counseling.update-status', $req->id) }}" method="POST">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="status" value="approved">
-                            <button type="submit" class="btn-approve">{{ __('messages.accept') }}</button>
-                        </form>
+                        <div class="request-card-actions">
+                            <form action="{{ route('dosen.counseling.update-status', $req->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="approved">
+                                <button type="submit" class="btn-approve">{{ __('messages.accept') }}</button>
+                            </form>
 
-                        <button onclick="openRejectModal({{ $req->id }})" class="btn-reject">{{ __('messages.reject') }}</button>
+                            <button onclick="openRejectModal({{ $req->id }})" class="btn-reject">{{ __('messages.reject') }}</button>
+                        </div>
                     @else
-                        <span style="color: #999; flex: 1;">-</span>
+                        <span style="color: #999; width: 100%;">-</span>
                     @endif
                 </div>
 
