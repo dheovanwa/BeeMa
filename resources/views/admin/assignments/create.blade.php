@@ -25,7 +25,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
         font-size: 14px;
@@ -56,7 +56,7 @@
         margin-top: 0;
         margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #f39c12;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -113,9 +113,9 @@
     }
 
     .search-input:focus {
-        border-color: #3498db;
+        border-color: #f39c12;
         outline: none;
-        box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
         background: white;
     }
 
@@ -151,9 +151,9 @@
     }
 
     .select-box:focus {
-        border-color: #3498db;
+        border-color: #f39c12;
         outline: none;
-        box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
     }
 
     .select-box option {
@@ -197,8 +197,8 @@
     }
 
     .select-list:focus-within {
-        border-color: #3498db;
-        box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        border-color: #f39c12;
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
     }
 
     .select-item {
@@ -281,7 +281,7 @@
         background: white;
         padding: 12px 15px;
         border-radius: 6px;
-        border-left: 4px solid #3498db;
+        border-left: 4px solid #f39c12;
         margin-bottom: 8px;
         font-size: 13px;
     }
@@ -326,14 +326,14 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
         color: white;
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 6px 16px rgba(243, 156, 18, 0.4);
     }
 
     .btn-primary:disabled {
@@ -344,8 +344,8 @@
 
     .btn-secondary {
         background: white;
-        color: #3498db;
-        border: 2px solid #3498db;
+        color: #f39c12;
+        border: 2px solid #f39c12;
     }
 
     .btn-secondary:hover {

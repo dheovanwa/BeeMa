@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f9a825 0%, #e8860a 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -32,7 +32,7 @@
         }
 
         .left-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f9a825 0%, #e8860a 100%);
             color: white;
             padding: 60px 40px;
             display: flex;
@@ -97,18 +97,18 @@
         }
 
         .lang-btn.active {
-            background: #3498db;
+            background: #f39c12;
             color: white;
-            border-color: #3498db;
+            border-color: #f39c12;
         }
 
         .lang-btn:hover {
-            border-color: #3498db;
-            color: #3498db;
+            border-color: #f39c12;
+            color: #f39c12;
         }
 
         .lang-btn.active:hover {
-            background: #2980b9;
+            background: #d68910;
         }
 
         h1 {
@@ -138,24 +138,24 @@
         }
 
         .btn-primary {
-            background: #3498db;
+            background: #f39c12;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #2980b9;
+            background: #d68910;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
         }
 
         .btn-secondary {
             background: #ecf0f1;
             color: #34495e;
-            border: 2px solid #3498db;
+            border: 2px solid #f39c12;
         }
 
         .btn-secondary:hover {
-            background: #3498db;
+            background: #f39c12;
             color: white;
         }
 

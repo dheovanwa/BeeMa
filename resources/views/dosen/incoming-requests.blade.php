@@ -22,7 +22,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -49,7 +49,7 @@
 
     .request-card:hover {
         box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        border-color: #3498db;
+        border-color: #f39c12;
     }
 
     .request-card-student {
@@ -115,7 +115,7 @@
     }
 
     .request-card-file-icon {
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-size: 18px;
         transition: color 0.3s;
@@ -128,7 +128,7 @@
     }
 
     .request-card-file-icon:hover {
-        color: #2980b9;
+        color: #d68910;
     }
 
     .request-card-message {
@@ -162,7 +162,7 @@
 
     .request-card-message-box:hover {
         background: #ecf0f1;
-        border-color: #3498db;
+        border-color: #f39c12;
     }
 
     .message-modal {
@@ -356,12 +356,12 @@
     }
 
     .btn-download {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-download:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .empty-state {
@@ -381,7 +381,7 @@
         display: inline-block;
         margin-top: 20px;
         padding: 10px 20px;
-        background: #3498db;
+        background: #f39c12;
         color: white;
         text-decoration: none;
         border-radius: 5px;
@@ -389,7 +389,7 @@
     }
 
     .empty-state a:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     @media (max-width: 768px) {

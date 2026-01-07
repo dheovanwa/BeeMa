@@ -18,13 +18,13 @@
         font-size: 28px;
         margin-bottom: 30px;
         padding-bottom: 20px;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #f39c12;
     }
 
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -105,9 +105,9 @@
 
     .form-group input[type="file"]:focus,
     .form-group textarea:focus {
-        border-color: #3498db;
+        border-color: #f39c12;
         outline: none;
-        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 0 5px rgba(243, 156, 18, 0.3);
     }
 
     .form-group textarea {
@@ -139,12 +139,12 @@
     }
 
     .btn-primary {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-primary:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-secondary {

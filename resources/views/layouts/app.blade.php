@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #fef3e0 0%, #ffe8cc 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -39,7 +39,7 @@
         header .logo {
             font-size: 24px;
             font-weight: bold;
-            color: #3498db;
+            color: #f39c12;
         }
 
         header .nav-right {
@@ -70,7 +70,7 @@
         }
 
         .lang-btn:hover {
-            background: #34495e;
+            background: #b8860b;
             color: white;
         }
 
@@ -141,12 +141,12 @@
         }
 
         .btn-primary {
-            background: #3498db;
+            background: #f39c12;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #2980b9;
+            background: #d68910;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
@@ -234,7 +234,7 @@
         }
 
         table thead {
-            background: #34495e;
+            background: #b8860b;
             color: white;
         }
 

@@ -34,7 +34,7 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         text-align: center;
         transition: transform 0.3s, box-shadow 0.3s;
-        border-left: 4px solid #3498db;
+        border-left: 4px solid #f39c12;
     }
 
     .stat-card:hover {
@@ -43,7 +43,7 @@
     }
 
     .stat-card.blue {
-        border-left-color: #3498db;
+        border-left-color: #f39c12;
     }
 
     .stat-card.green {

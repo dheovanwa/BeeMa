@@ -22,7 +22,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -48,12 +48,12 @@
     }
 
     .btn-primary {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-primary:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-success {
@@ -130,8 +130,8 @@
 
     .filter-group input:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+        border-color: #f39c12;
+        box-shadow: 0 0 5px rgba(243, 156, 18, 0.2);
     }
 
     .filter-buttons {
@@ -145,12 +145,12 @@
     }
 
     .btn-filter {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-filter:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-reset {
@@ -176,12 +176,12 @@
         padding: 20px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         transition: all 0.3s;
-        border-left: 5px solid #3498db;
+        border-left: 5px solid #f39c12;
     }
 
     .assignment-card:hover {
         box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        border-color: #3498db;
+        border-color: #f39c12;
     }
 
     .assignment-id {

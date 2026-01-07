@@ -12,7 +12,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -53,8 +53,8 @@
     .form-group input:focus,
     .form-group select:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        border-color: #f39c12;
+        box-shadow: 0 0 5px rgba(243, 156, 18, 0.3);
     }
 
     .form-row {
@@ -87,12 +87,12 @@
     }
 
     .btn-save {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-save:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-cancel {

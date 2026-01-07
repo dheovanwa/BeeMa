@@ -22,7 +22,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -58,7 +58,7 @@
     }
 
     .request-table thead {
-        background: #34495e;
+        background: #b8860b;
         color: white;
     }
 
@@ -91,12 +91,12 @@
         padding: 20px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         transition: all 0.3s;
-        border-left: 5px solid #17a2b8;
+        border-left: 5px solid #f39c12;
     }
 
     .request-card:hover {
         box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        border-color: #17a2b8;
+        border-color: #f39c12;
     }
 
     .request-card-header {
@@ -180,7 +180,7 @@
     }
 
     .request-card-file-icon {
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-size: 18px;
         transition: color 0.3s;
@@ -193,7 +193,7 @@
     }
 
     .request-card-file-icon:hover {
-        color: #2980b9;
+        color: #d68910;
     }
 
     .request-card-footer {
@@ -254,7 +254,7 @@
     }
 
     .request-card-footer .btn-download {
-        background: #3498db;
+        background: #f39c12;
         color: white;
         text-align: center;
         text-decoration: none;
@@ -268,7 +268,7 @@
     }
 
     .request-card-footer .btn-download:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .badge {
@@ -325,13 +325,13 @@
     }
 
     .btn-download {
-        background: #3498db;
+        background: #f39c12;
         color: white;
         text-decoration: none;
     }
 
     .btn-download:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .empty-state {
