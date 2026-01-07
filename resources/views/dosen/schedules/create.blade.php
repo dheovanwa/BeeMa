@@ -266,21 +266,5 @@
 </script>
 
 @endsection
-        </div>
-
-        <div style="margin: 10px 0;">
-            <label for="status">Status:</label><br>
-            <select id="status" name="status" required style="width: 300px; padding: 5px;">
-                <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>Buka</option>
-                <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Tutup</option>
-            </select>
-        </div>
-
-        <div style="margin: 20px 0;">
-            <button type="submit" style="background: #007bff; color: white; padding: 10px 30px; border: none; cursor: pointer; font-size: 16px;">
-                Simpan Jadwal
-            </button>
-        </div>
-    </form>
 </body>
 </html>
