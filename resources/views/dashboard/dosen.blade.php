@@ -27,7 +27,7 @@
     }
 
     .stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f9a825 0%, #e8860a 100%);
         color: white;
         padding: 25px;
         border-radius: 10px;
@@ -67,7 +67,7 @@
         color: #2c3e50;
         margin-bottom: 20px;
         padding-bottom: 10px;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #f39c12;
     }
 
     .schedule-table {
@@ -77,7 +77,7 @@
     }
 
     .schedule-table thead {
-        background: #34495e;
+        background: #b8860b;
         color: white;
     }
 
@@ -114,16 +114,16 @@
 
     .schedule-card:hover {
         box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        border-color: #3498db;
+        border-color: #f39c12;
     }
 
     .schedule-card.request-card {
-        border-left: 5px solid #17a2b8;
-        background: #f0f8ff;
+        border-left: 5px solid #f39c12;
+        background: #f8f9fa;
     }
 
     .schedule-card.manual-card {
-        border-left: 5px solid #3498db;
+        border-left: 5px solid #f39c12;
     }
 
     .card-header {
@@ -144,11 +144,11 @@
     }
 
     .card-type-badge.manual {
-        background: #3498db;
+        background: #f39c12;
     }
 
     .card-type-badge.request {
-        background: #17a2b8;
+        background: #f39c12;
     }
 
     .card-body {
@@ -424,7 +424,7 @@
                         </div>
                         <div class="card-row">
                             <span class="card-label">{{ __('messages.quota') }}</span>
-                            <span class="card-value">{{ $schedule->quota }}</span>
+                            <span class="card-value">{{ $schedule->bookings->where('status', 'approved')->count() }} / {{ $schedule->quota  }}</span>
                         </div>
                     </div>
                     <div class="card-footer">

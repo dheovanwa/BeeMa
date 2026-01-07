@@ -32,7 +32,7 @@
         color: #2c3e50;
         margin-bottom: 20px;
         padding-bottom: 10px;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #f39c12;
         margin-top: 40px;
     }
 
@@ -54,7 +54,7 @@
 
     .schedule-card:hover {
         box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        border-color: #3498db;
+        border-color: #f39c12;
         transform: translateY(-3px);
     }
 
@@ -115,7 +115,7 @@
     .btn-book {
         flex: 1;
         padding: 10px;
-        background: #3498db;
+        background: #f39c12;
         color: white;
         border: none;
         border-radius: 5px;
@@ -128,7 +128,7 @@
     }
 
     .btn-book:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-book:disabled {
@@ -183,7 +183,7 @@
 
 <div class="action-buttons">
     <a href="{{ route('mahasiswa.my-bookings') }}" class="btn btn-primary">{{ app()->getLocale() === 'en' ? 'My Bookings' : 'Booking Saya' }}</a>
-    <a href="{{ route('mahasiswa.counseling.create') }}" class="btn btn-secondary">{{ app()->getLocale() === 'en' ? 'Request Meeting' : 'Minta Pertemuan' }}</a>
+    <a href="{{ route('mahasiswa.counseling.create') }}" class="btn btn-secondary">{{ app()->getLocale() === 'en' ? 'Request Counseling' : 'Minta Konseling' }}</a>
 </div>
 
 <div class="section-title">
@@ -264,7 +264,7 @@
 
             <div class="form-group">
                 <label for="file">{{ __('messages.upload') }} {{ app()->getLocale() === 'en' ? 'File (PDF)' : 'File (PDF)' }} <span style="color: #e74c3c;">*</span></label>
-                <div style="border: 2px dashed #3498db; border-radius: 5px; padding: 20px; text-align: center; cursor: pointer; transition: background 0.3s;" id="dropZone">
+                <div style="border: 2px dashed #f39c12; border-radius: 5px; padding: 20px; text-align: center; cursor: pointer; transition: background 0.3s;" id="dropZone">
                     <p style="margin: 0; color: #7f8c8d;">{{ app()->getLocale() === 'en' ? 'Drag & drop your PDF here or click to browse' : 'Seret & lepas file PDF atau klik untuk memilih' }}</p>
                     <input type="file" id="file" name="file" accept=".pdf" style="display: none;">
                 </div>

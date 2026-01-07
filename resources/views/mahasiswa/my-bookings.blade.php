@@ -22,7 +22,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -37,7 +37,7 @@
         color: #2c3e50;
         margin: 30px 0 20px 0;
         padding-bottom: 10px;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #f39c12;
     }
 
     .booking-table {
@@ -47,7 +47,7 @@
     }
 
     .booking-table thead {
-        background: #34495e;
+        background: #b8860b;
         color: white;
     }
 
@@ -106,7 +106,7 @@
         display: inline-block;
         margin-top: 20px;
         padding: 10px 20px;
-        background: #3498db;
+        background: #f39c12;
         color: white;
         text-decoration: none;
         border-radius: 5px;
@@ -114,7 +114,7 @@
     }
 
     .empty-state a:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .lecturer-info {
@@ -131,7 +131,7 @@
     }
 
     .action-link {
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
         font-size: 12px;
@@ -167,7 +167,7 @@
         <p style="color: #7f8c8d; margin: 5px 0 0 0;">{{ app()->getLocale() === 'en' ? 'History of your consultation requests' : 'Riwayat permintaan konsultasi Anda' }}</p>
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="{{ route('mahasiswa.dashboard') }}" style="background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block; transition: all 0.3s;" onmouseover="this.style.background='#2980b9'" onmouseout="this.style.background='#3498db'">
+        <a href="{{ route('mahasiswa.dashboard') }}" style="background: #f39c12; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block; transition: all 0.3s;" onmouseover="this.style.background='#d68910'" onmouseout="this.style.background='#f39c12'">
             📅 {{ app()->getLocale() === 'en' ? 'Book Schedule' : 'Booking Jadwal' }}
         </a>
         <a href="{{ route('mahasiswa.counseling.create') }}" style="background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block; transition: all 0.3s;" onmouseover="this.style.background='#229954'" onmouseout="this.style.background='#27ae60'">

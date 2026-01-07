@@ -12,7 +12,7 @@
     .back-link {
         display: inline-block;
         margin-bottom: 20px;
-        color: #3498db;
+        color: #f39c12;
         text-decoration: none;
         font-weight: bold;
     }
@@ -53,8 +53,8 @@
     .form-group input:focus,
     .form-group select:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        border-color: #f39c12;
+        box-shadow: 0 0 5px rgba(243, 156, 18, 0.3);
     }
 
     .form-row {
@@ -87,12 +87,12 @@
     }
 
     .btn-save {
-        background: #3498db;
+        background: #f39c12;
         color: white;
     }
 
     .btn-save:hover {
-        background: #2980b9;
+        background: #d68910;
     }
 
     .btn-cancel {
@@ -266,21 +266,5 @@
 </script>
 
 @endsection
-        </div>
-
-        <div style="margin: 10px 0;">
-            <label for="status">Status:</label><br>
-            <select id="status" name="status" required style="width: 300px; padding: 5px;">
-                <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>Buka</option>
-                <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Tutup</option>
-            </select>
-        </div>
-
-        <div style="margin: 20px 0;">
-            <button type="submit" style="background: #007bff; color: white; padding: 10px 30px; border: none; cursor: pointer; font-size: 16px;">
-                Simpan Jadwal
-            </button>
-        </div>
-    </form>
 </body>
 </html>
