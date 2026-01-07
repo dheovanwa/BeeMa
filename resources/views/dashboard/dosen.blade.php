@@ -424,7 +424,7 @@
                         </div>
                         <div class="card-row">
                             <span class="card-label">{{ __('messages.quota') }}</span>
-                            <span class="card-value">{{ $schedule->quota }}</span>
+                            <span class="card-value">{{ $schedule->bookings->where('status', 'approved')->count() }} / {{ $schedule->quota  }}</span>
                         </div>
                     </div>
                     <div class="card-footer">
