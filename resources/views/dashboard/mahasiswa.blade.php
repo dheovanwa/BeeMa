@@ -183,7 +183,7 @@
 
 <div class="action-buttons">
     <a href="{{ route('mahasiswa.my-bookings') }}" class="btn btn-primary">{{ app()->getLocale() === 'en' ? 'My Bookings' : 'Booking Saya' }}</a>
-    <a href="{{ route('mahasiswa.counseling.create') }}" class="btn btn-secondary">{{ app()->getLocale() === 'en' ? 'Request Meeting' : 'Minta Pertemuan' }}</a>
+    <a href="{{ route('mahasiswa.counseling.create') }}" class="btn btn-secondary">{{ app()->getLocale() === 'en' ? 'Request Counseling' : 'Minta Konseling' }}</a>
 </div>
 
 <div class="section-title">
