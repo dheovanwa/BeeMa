@@ -1,0 +1,43 @@
+@layer components {
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #95a5a6;
+    }
+
+    .close-btn:hover {
+        color: #2c3e50;
+    }
+}

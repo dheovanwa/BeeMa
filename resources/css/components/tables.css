@@ -1,0 +1,26 @@
+@layer components {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table thead {
+        background: #b8860b;
+        color: white;
+    }
+
+    table th {
+        padding: 15px;
+        text-align: left;
+    }
+
+    table td {
+        padding: 15px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    table tbody tr:hover {
+        background: #f8f9fa;
+    }
+}

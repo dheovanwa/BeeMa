@@ -1,0 +1,17 @@
+@layer components {
+    .features {
+        text-align: left;
+        margin-top: 20px;
+    }
+
+    .feature-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .feature-icon {
+        font-size: 20px;
+    }
+}

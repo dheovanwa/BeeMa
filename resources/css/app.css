@@ -9,3 +9,105 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Components */
+@import './components/header.css';
+@import './components/language.css';
+@import './components/buttons.css';
+@import './components/alerts.css';
+@import './components/badges.css';
+@import './components/cards.css';
+@import './components/tables.css';
+@import './components/forms.css';
+@import './components/grid.css';
+@import './components/modal.css';
+@import './components/forms.css';
+
+@layer base {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fef3e0 0%, #ffe8cc 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+}
+
+@layer components {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        main {
+            padding: 15px;
+        }
+
+        .grid.cols-3 {
+            grid-template-columns: 1fr;
+        }
+
+        table {
+            font-size: 12px;
+        }
+    }
+
+    /* Main */
+    main {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Logout Buttons */
+    .logout-btn {
+        padding: 8px 15px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+        background: #c0392b;
+    }   
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+        header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        main {
+            padding: 15px;
+        }
+
+        .grid.cols-3 {
+            grid-template-columns: 1fr;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        table th, table td {
+            padding: 10px;
+        }
+    }
+}

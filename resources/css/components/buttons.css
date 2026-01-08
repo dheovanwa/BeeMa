@@ -1,0 +1,66 @@
+@layer components {
+    button,
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+    }
+
+    .btn-primary {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #d68910;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #229954;
+    }
+
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+
+    .btn-warning {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d68910;
+    }
+
+    .btn-sm {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+
+}

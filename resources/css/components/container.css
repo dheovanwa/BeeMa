@@ -1,0 +1,41 @@
+@layer components {
+    .container {
+        max-width: 1000px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .left-section {
+        background: linear-gradient(135deg, #f9a825 0%, #e8860a 100%);
+        color: white;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .right-section {
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .logo {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .tagline {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        opacity: 0.9;
+    }
+}

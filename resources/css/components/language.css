@@ -1,0 +1,27 @@
+@layer components {
+    .lang-switcher {
+        display: flex;
+        gap: 5px;
+    }
+
+    .lang-btn {
+        padding: 5px 12px;
+        background: #ecf0f1;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .lang-btn.active {
+        background: #3498db;
+        color: white;
+    }
+
+    .lang-btn:hover {
+        background: #b8860b;
+        color: white;
+    }
+}
