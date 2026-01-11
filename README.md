@@ -375,7 +375,8 @@ Route::middleware('auth')->group(function () {
 5. Run migrations: `php artisan migrate`
 6. Run seeders: `php artisan db:seed`
 7. Build assets: `npm run build`
-8. Start server: `php artisan serve`
+8. Start server npm simulataneously with laravel: `npm run dev`
+9. Start server laravel: `php artisan serve`
 
 ---
 
