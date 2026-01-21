@@ -24,6 +24,50 @@ Aplikasi ini menargetkan pengguna dengan tiga peran utama:
 
 ---
 
+## Teknologi Stack
+
+-   **Framework:** Laravel 12.40.2
+-   **Database:** MySQL
+-   **Frontend:** Blade Template Engine, CSS3, JavaScript ES6
+-   **Build Tool:** Vite v7.3.0
+-   **UI Framework:** Bootstrap Icons, Custom CSS
+-   **Authentication:** Laravel Sanctum
+
+---
+
+## Instalasi
+
+1. Clone repository
+2. Install dependencies: `composer install` dan `npm install`
+3. Setup `.env` file dengan meng-copy dari .env.example
+4. Generate key: `php artisan key:generate`
+5. Run migrations: `php artisan migrate`
+6. Run seeders: `php artisan db:seed`
+7. Build assets: `npm run build`
+8. Start server npm simulataneously with laravel: `npm run dev`
+9. Start server laravel: `php artisan serve`
+
+---
+
+## Struktur Database
+
+**User Roles:**
+
+-   Admin - Mengelola penugasan
+-   Dosen - Membuat jadwal dan mengelola permintaan
+-   Mahasiswa - Membuat booking dan permintaan konsultasi
+
+**Entities:**
+
+-   Users - Data pengguna dengan role
+-   Schedules - Jadwal konsultasi dosen
+-   Bookings - Reservasi jadwal oleh mahasiswa
+-   CounselingRequests - Permintaan konsultasi khusus
+-   Assignments - Penugasan dosen-mahasiswa dari admin
+
+---
+
+
 ## 2. Penjelasan Fitur Aplikasi
 
 ### 2.1 Autentikasi (Authentication)
@@ -355,45 +399,3 @@ Route::middleware('auth')->group(function () {
 
 ---
 
-## Teknologi Stack
-
--   **Framework:** Laravel 12.40.2
--   **Database:** MySQL
--   **Frontend:** Blade Template Engine, CSS3, JavaScript ES6
--   **Build Tool:** Vite v7.3.0
--   **UI Framework:** Bootstrap Icons, Custom CSS
--   **Authentication:** Laravel Sanctum
-
----
-
-## Instalasi
-
-1. Clone repository
-2. Install dependencies: `composer install` dan `npm install`
-3. Setup `.env` file
-4. Generate key: `php artisan key:generate`
-5. Run migrations: `php artisan migrate`
-6. Run seeders: `php artisan db:seed`
-7. Build assets: `npm run build`
-8. Start server npm simulataneously with laravel: `npm run dev`
-9. Start server laravel: `php artisan serve`
-
----
-
-## Struktur Database
-
-**User Roles:**
-
--   Admin - Mengelola penugasan
--   Dosen - Membuat jadwal dan mengelola permintaan
--   Mahasiswa - Membuat booking dan permintaan konsultasi
-
-**Entities:**
-
--   Users - Data pengguna dengan role
--   Schedules - Jadwal konsultasi dosen
--   Bookings - Reservasi jadwal oleh mahasiswa
--   CounselingRequests - Permintaan konsultasi khusus
--   Assignments - Penugasan dosen-mahasiswa dari admin
-
----
