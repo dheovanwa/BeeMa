@@ -51,6 +51,8 @@ Aplikasi ini menargetkan pengguna dengan tiga peran utama:
 
 ## Struktur Database
 
+<img width="801" height="515" alt="image" src="https://github.com/user-attachments/assets/0ba09bf7-4a10-4c01-913a-1091c9390ada" />
+
 **User Roles:**
 
 -   Admin - Mengelola penugasan
