@@ -31,7 +31,7 @@ Aplikasi ini menargetkan pengguna dengan tiga peran utama:
 -   **Frontend:** Blade Template Engine, CSS3, JavaScript ES6
 -   **Build Tool:** Vite v7.3.0
 -   **UI Framework:** Bootstrap Icons, Custom CSS
--   **Authentication:** Laravel Sanctum
+-   **Authentication:** Manual Authentication
 
 ---
 
