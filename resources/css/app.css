@@ -11,7 +11,6 @@
 }
 
 /* Components */
-@import './components/header.css';
 @import './components/language.css';
 @import './components/buttons.css';
 @import './components/alerts.css';
@@ -22,6 +21,11 @@
 @import './components/grid.css';
 @import './components/modal.css';
 @import './components/forms.css';
+@import './components/content-header.css';
+@import './components/empty-state.css';
+
+/* page SPecific CSS */
+@import './pages/mahasiswa/mybookings.css';
 
 @layer base {
     * {
@@ -38,29 +42,36 @@
     }
 }
 
+/* General */
 @layer components {
+    /* Headers */
+    /* header tag only*/
+    header {
+        background: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #f39c12;
+    }
+
+    header .nav-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
     .container {
         max-width: 1200px;
         margin: 0 auto;
-    }
-
-    @media (max-width: 768px) {
-        header {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        main {
-            padding: 15px;
-        }
-
-        .grid.cols-3 {
-            grid-template-columns: 1fr;
-        }
-
-        table {
-            font-size: 12px;
-        }
     }
 
     /* Main */

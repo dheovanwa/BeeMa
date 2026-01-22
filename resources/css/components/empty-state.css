@@ -1,0 +1,29 @@
+@layer components {
+.empty-state {
+        text-align: center;
+        padding: 60px 40px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        color: #7f8c8d;
+    }
+
+    .empty-state h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .empty-state a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #f39c12;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .empty-state a:hover {
+        background: #d68910;
+    }
+}

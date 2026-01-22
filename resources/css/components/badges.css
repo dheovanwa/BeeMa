@@ -6,6 +6,14 @@
         font-weight: bold;
     }
 
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    
     .badge-pending { background: #fff3cd; color: #856404; }
     .badge-accepted { background: #d4edda; color: #155724; }
     .badge-rejected { background: #f8d7da; color: #721c24; }
