@@ -4,6 +4,14 @@
 
 @section('content')
 <style>
+    main{
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
     .form-container {
         max-width: 700px;
         margin: 0 auto;
@@ -133,9 +141,10 @@
     }
 </style>
 
-<a href="{{ route('mahasiswa.dashboard') }}" class="back-link">← {{ __('messages.back') }}</a>
+
 
 <div class="form-container">
+    <a href="{{ route('mahasiswa.dashboard') }}" class="back-link">← {{ __('messages.back') }}</a>
     <h1>{{ app()->getLocale() === 'en' ? 'Request Counseling' : 'Permintaan Konsultasi' }}</h1>
 
     @if($errors->any())
