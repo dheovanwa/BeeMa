@@ -74,7 +74,7 @@ return [
     'search' => 'Search',
     'reset' => 'Reset',
     'select_lecturer_first' => 'Please Select a Lecturer',
-    
+
     // Alert Messages
     'assignment_created' => 'Assignment created successfully.',
     'assignment_deleted' => 'Assignment deleted successfully.',

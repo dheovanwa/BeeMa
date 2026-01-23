@@ -18,7 +18,7 @@ class MahasiswaController extends Controller
     public function dashboard(Request $request)
     {
         $mahasiswa = Auth::user();
-        
+
         // Get IDs of assigned dosen
         $assignedDosenIds = $mahasiswa->assignedDosens()->pluck('users.id');
 
@@ -40,14 +40,14 @@ class MahasiswaController extends Controller
     public function showBookingForm(Schedule $schedule)
     {
         $mahasiswa = Auth::user();
-        
+
         // Check if this dosen is assigned to the mahasiswa
         $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $schedule->user_id)->exists();
-        
+
         if (!$isAssigned) {
             return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.no_access'));
         }
-        
+
         // Check if schedule is open
         if ($schedule->status !== 'open') {
             return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.schedule_closed'));
@@ -167,7 +167,7 @@ class MahasiswaController extends Controller
 
         // Check if dosen is assigned to mahasiswa
         $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $dosenId)->exists();
-        
+
         if (!$isAssigned) {
             return back()->withErrors(['error' => __('messages.invalid_assigned_lecturer')])->withInput();
         }

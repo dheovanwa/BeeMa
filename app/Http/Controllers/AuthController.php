@@ -17,7 +17,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return $this->redirectToDashboard(Auth::user());
         }
-        
+
         return view('auth.register');
     }
 
@@ -59,7 +59,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return $this->redirectToDashboard(Auth::user());
         }
-        
+
         return view('auth.login');
     }
 
@@ -77,7 +77,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $user = Auth::user();
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');

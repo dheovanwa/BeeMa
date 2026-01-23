@@ -74,7 +74,7 @@ return [
     'search' => 'Cari',
     'reset' => 'Reset',
     'select_lecturer_first' => 'Mohon Pilih Dosen Terlebih Dahulu',
-    
+
     // Alert Messages
     'assignment_created' => 'Penugasan berhasil dibuat.',
     'assignment_deleted' => 'Penugasan berhasil dihapus.',
