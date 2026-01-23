@@ -4,6 +4,11 @@
 
 @section('content')
 <style>
+    main{
+        max-width: 550px;
+        margin: 0 auto;
+    }
+
     .login-container {
         max-width: 500px;
         margin: 0 auto;

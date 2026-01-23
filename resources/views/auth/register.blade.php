@@ -4,6 +4,11 @@
 
 @section('content')
 <style>
+    main{
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
     .register-container {
         max-width: 600px;
         margin: 0 auto;
