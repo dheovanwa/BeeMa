@@ -4,6 +4,15 @@
 
 @section('content')
 <style>
+    .container{
+        display: flex;
+        justify-content: center;
+    }
+
+    main{
+        max-width: 700px;
+    }
+
     .form-container {
         max-width: 600px;
         margin: 0 auto;
@@ -96,7 +105,7 @@
     }
 
     .btn-cancel {
-        background: #95a5a6;
+        background: #e74c3c;
         color: white;
         text-decoration: none;
         text-align: center;
@@ -106,7 +115,7 @@
     }
 
     .btn-cancel:hover {
-        background: #7f8c8d;
+        background: #c3092b;
     }
 
     .help-text {
@@ -223,8 +232,8 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-save">{{ app()->getLocale() === 'en' ? 'Update Schedule' : 'Update Jadwal' }}</button>
             <a href="{{ route('dosen.dashboard') }}" class="btn btn-cancel">{{ __('messages.cancel') }}</a>
+            <button type="submit" class="btn btn-save">{{ app()->getLocale() === 'en' ? 'Update Schedule' : 'Update Jadwal' }}</button>
         </div>
     </form>
 </div>
