@@ -82,7 +82,7 @@ class DosenController extends Controller
         if ($endTime <= $startTime) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['end_time' => 'End time must be after start time']);
+                ->withErrors(['end_time' => __('messages.end_time_after_start')]);
         }
 
         $dosenId = Auth::id();
@@ -130,7 +130,7 @@ class DosenController extends Controller
         if ($overlappingSchedule) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['time' => 'Jadwal bertabrakan dengan jadwal lain yang sudah ada. Silakan pilih waktu yang berbeda.']);
+                ->withErrors(['time' => __('messages.schedule_conflict')]);
         }
 
         try {
@@ -147,12 +147,12 @@ class DosenController extends Controller
             if ($e->getCode() === '23000') { // Integrity constraint violation
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['time' => 'Duplikat jadwal pada waktu yang sama tidak diperbolehkan.']);
+                    ->withErrors(['time' => __('messages.schedule_duplicate')]);
             }
             throw $e;
         }
 
-        return redirect()->route('dosen.dashboard')->with('success', 'Jadwal berhasil ditambahkan!');
+        return redirect()->route('dosen.dashboard')->with('success', __('messages.schedule_created'));
     }
 
     /**
@@ -197,7 +197,7 @@ class DosenController extends Controller
         if ($endTime <= $startTime) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['end_time' => 'End time must be after start time']);
+                ->withErrors(['end_time' => __('messages.end_time_after_start')]);
         }
 
         $dosenId = Auth::id();
@@ -246,7 +246,7 @@ class DosenController extends Controller
         if ($overlappingSchedule) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['time' => 'Jadwal bertabrakan dengan jadwal lain yang sudah ada. Silakan pilih waktu yang berbeda.']);
+                ->withErrors(['time' => __('messages.schedule_conflict')]);
         }
 
         try {
@@ -262,12 +262,12 @@ class DosenController extends Controller
             if ($e->getCode() === '23000') {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['time' => 'Duplikat jadwal pada waktu yang sama tidak diperbolehkan.']);
+                    ->withErrors(['time' => __('messages.schedule_duplicate')]);
             }
             throw $e;
         }
 
-        return redirect()->route('dosen.dashboard')->with('success', 'Jadwal berhasil diperbarui!');
+        return redirect()->route('dosen.dashboard')->with('success', __('messages.schedule_updated'));
     }
 
     /**
@@ -282,7 +282,7 @@ class DosenController extends Controller
 
         $schedule->delete();
 
-        return redirect()->route('dosen.dashboard')->with('success', 'Jadwal berhasil dihapus!');
+        return redirect()->route('dosen.dashboard')->with('success', __('messages.schedule_deleted'));
     }
 
     /**
@@ -329,7 +329,7 @@ class DosenController extends Controller
 
             // Check if quota is already full
             if ($approvedCount >= $schedule->quota) {
-                return back()->with('error', 'Kuota untuk jadwal ini sudah penuh!');
+                return back()->with('error', __('messages.booking_full'));
             }
 
             // Approve this booking
@@ -345,12 +345,12 @@ class DosenController extends Controller
                     ->where('id', '!=', $booking->id)
                     ->update([
                         'status' => 'rejected',
-                        'rejection_reason' => 'Kuota untuk jadwal ini sudah penuh.',
+                        'rejection_reason' => __('messages.booking_full'),
                     ]);
 
-                $message = 'Booking berhasil disetujui! Kuota penuh, booking lainnya otomatis ditolak.';
+                $message = __('messages.booking_approved_quota_full');
             } else {
-                $message = 'Booking berhasil disetujui!';
+                $message = __('messages.booking_approved');
             }
         } else {
             // Reject booking with reason
@@ -358,7 +358,7 @@ class DosenController extends Controller
                 'status' => 'rejected',
                 'rejection_reason' => $request->rejection_reason,
             ]);
-            $message = 'Booking berhasil ditolak!';
+            $message = __('messages.booking_rejected');
         }
 
         return back()->with('success', $message);
@@ -383,7 +383,7 @@ class DosenController extends Controller
 
         // Check if quota is already full
         if ($approvedCount >= $schedule->quota) {
-            return back()->with('error', 'Kuota untuk jadwal ini sudah penuh!');
+            return back()->with('error', __('messages.booking_full'));
         }
 
         // Approve this booking
@@ -399,13 +399,13 @@ class DosenController extends Controller
                 ->where('id', '!=', $booking->id)
                 ->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Kuota untuk jadwal ini sudah penuh.',
+                    'rejection_reason' => __('messages.booking_full'),
                 ]);
 
-            return back()->with('success', 'Booking berhasil disetujui! Kuota penuh, booking lainnya otomatis ditolak.');
+            return back()->with('success', __('messages.booking_approved_quota_full'));
         }
 
-        return back()->with('success', 'Booking berhasil disetujui!');
+        return back()->with('success', __('messages.booking_approved'));
     }
 
     /**
@@ -420,7 +420,7 @@ class DosenController extends Controller
 
         $booking->update(['status' => 'rejected']);
 
-        return back()->with('success', 'Booking berhasil ditolak!');
+        return back()->with('success', __('messages.booking_rejected'));
     }
 
     /**
@@ -458,8 +458,8 @@ class DosenController extends Controller
         ]);
 
         $message = $request->status === 'approved'
-            ? 'Permintaan bimbingan berhasil disetujui!'
-            : 'Permintaan bimbingan berhasil ditolak!';
+            ? __('messages.counseling_approved')
+            : __('messages.counseling_rejected');
 
         return back()->with('success', $message);
     }

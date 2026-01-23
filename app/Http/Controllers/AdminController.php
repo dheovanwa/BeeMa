@@ -63,9 +63,9 @@ class AdminController extends Controller
             'mahasiswa_id' => 'required|array|min:1',
             'mahasiswa_id.*' => 'exists:users,id',
         ], [
-            'dosen_id.required' => 'Please select a lecturer.',
-            'mahasiswa_id.required' => 'Please select at least one student.',
-            'mahasiswa_id.min' => 'Please select at least one student.',
+            'dosen_id.required' => __('messages.select_lecturer'),
+            'mahasiswa_id.required' => __('messages.select_students'),
+            'mahasiswa_id.min' => __('messages.select_students'),
         ]);
 
         $dosenId = $request->dosen_id;
@@ -90,12 +90,7 @@ class AdminController extends Controller
             }
         }
 
-        $message = "Created $createdCount assignment" . ($createdCount !== 1 ? 's' : '');
-        if ($skippedCount > 0) {
-            $message .= " ($skippedCount already existed).";
-        } else {
-            $message .= '.';
-        }
+        $message = $createdCount > 0 ? __('messages.assignment_created') : __('messages.success');
 
         return redirect()->route('admin.dashboard')->with('success', $message);
     }
@@ -103,6 +98,6 @@ class AdminController extends Controller
     public function destroy(Assignment $assignment)
     {
         $assignment->delete();
-        return redirect()->route('admin.dashboard')->with('success', 'Assignment deleted successfully.');
+        return redirect()->route('admin.dashboard')->with('success', __('messages.assignment_deleted'));
     }
 }

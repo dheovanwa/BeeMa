@@ -45,12 +45,12 @@ class MahasiswaController extends Controller
         $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $schedule->user_id)->exists();
         
         if (!$isAssigned) {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda tidak memiliki akses ke dosen ini!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.no_access'));
         }
         
         // Check if schedule is open
         if ($schedule->status !== 'open') {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Jadwal ini sudah ditutup!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.schedule_closed'));
         }
 
         // Check if user already has a booking for this schedule
@@ -59,7 +59,7 @@ class MahasiswaController extends Controller
             ->first();
 
         if ($existingBooking) {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda sudah melakukan booking untuk jadwal ini!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.already_booked'));
         }
 
         return view('mahasiswa.booking-form', compact('schedule'));
@@ -81,7 +81,7 @@ class MahasiswaController extends Controller
 
         // Check if schedule is open
         if ($schedule->status !== 'open') {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Jadwal ini sudah ditutup!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.schedule_closed'));
         }
 
         // Check if user already has a booking for this schedule
@@ -90,7 +90,7 @@ class MahasiswaController extends Controller
             ->first();
 
         if ($existingBooking) {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda sudah melakukan booking untuk jadwal ini!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.already_booked'));
         }
 
         // Upload file
@@ -109,7 +109,7 @@ class MahasiswaController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('mahasiswa.my-bookings')->with('success', 'Booking berhasil dibuat! Menunggu persetujuan dosen.');
+        return redirect()->route('mahasiswa.my-bookings')->with('success', __('messages.booking_created'));
     }
 
     /**
@@ -139,7 +139,7 @@ class MahasiswaController extends Controller
         $dosens = $mahasiswa->assignedDosens;
 
         if ($dosens->isEmpty()) {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Anda belum memiliki dosen yang ditugaskan!');
+            return redirect()->route('mahasiswa.dashboard')->with('error', __('messages.no_assigned_lecturer'));
         }
 
         return view('mahasiswa.request-counseling', compact('dosens'));
@@ -169,7 +169,7 @@ class MahasiswaController extends Controller
         $isAssigned = $mahasiswa->assignedDosens()->where('users.id', $dosenId)->exists();
         
         if (!$isAssigned) {
-            return back()->withErrors(['error' => 'Dosen ini tidak ditugaskan kepada Anda!'])->withInput();
+            return back()->withErrors(['error' => __('messages.invalid_assigned_lecturer')])->withInput();
         }
 
         // Check for time conflicts with dosen's existing schedules
@@ -181,7 +181,7 @@ class MahasiswaController extends Controller
             ->exists();
 
         if ($scheduleConflict) {
-            return back()->withErrors(['error' => 'Waktu yang Anda pilih bertabrakan dengan jadwal dosen yang sudah ada!'])->withInput();
+            return back()->withErrors(['error' => __('messages.time_conflict_with_schedule')])->withInput();
         }
 
         // Check for time conflicts with other counseling requests
@@ -193,7 +193,7 @@ class MahasiswaController extends Controller
             ->exists();
 
         if ($counselingConflict) {
-            return back()->withErrors(['error' => 'Waktu yang Anda pilih bertabrakan dengan permintaan bimbingan lain yang sudah ada!'])->withInput();
+            return back()->withErrors(['error' => __('messages.time_conflict_with_counseling')])->withInput();
         }
 
         // Upload file
@@ -215,7 +215,7 @@ class MahasiswaController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Permintaan bimbingan berhasil dikirim! Menunggu konfirmasi dosen.');
+        return redirect()->route('mahasiswa.dashboard')->with('success', __('messages.counseling_created'));
     }
 }
 
