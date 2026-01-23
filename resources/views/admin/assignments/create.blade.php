@@ -405,7 +405,7 @@
     }
 </style>
 
-<a href="{{ route('admin.assignments.index') }}" class="back-link">← {{ __('messages.back') }}</a>
+<a href="{{ route('admin.dashboard') }}" class="back-link">← {{ __('messages.back') }}</a>
 
 <div class="page-header">
     <h1>{{ app()->getLocale() === 'en' ? 'Create New Assignment' : 'Buat Penugasan Baru' }}</h1>
@@ -545,7 +545,7 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-            <a href="{{ route('admin.assignments.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                 ✕ {{ __('messages.cancel') }}
             </a>
             <button type="submit" class="btn btn-primary" id="submitBtn">

@@ -40,11 +40,11 @@ Route::post('/login', [AuthController::class, 'login']);
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
+
     // Download booking file - accessible by both dosen and mahasiswa
     Route::get('/booking/{booking}/download', function (App\Models\Booking $booking) {
         $user = Auth::user();
-        
+
         // Check if user is authorized to download this file
         // Mahasiswa can download their own files
         // Dosen can download files from bookings on their schedules
@@ -55,82 +55,82 @@ Route::middleware('auth')->group(function () {
         } else {
             abort(403, 'Unauthorized to download this file.');
         }
-        
+
         if (!$booking->file_path || !Storage::disk('public')->exists($booking->file_path)) {
             abort(404, 'File not found.');
         }
-        
+
         return response()->download(storage_path('app/public/' . $booking->file_path));
     })->name('booking.download');
-    
+
     // Dosen routes - only accessible by users with role 'dosen'
     Route::middleware('role:dosen')->prefix('dosen')->name('dosen.')->group(function () {
         // GET /dosen/dashboard -> List of own schedules
         Route::get('/dashboard', [DosenController::class, 'dashboard'])->name('dashboard');
-        
+
         // GET /dosen/incoming-requests -> View booking requests
         Route::get('/incoming-requests', [DosenController::class, 'incomingRequests'])->name('incoming-requests');
-        
+
         // GET /dosen/counseling-requests -> View counseling requests
         Route::get('/counseling-requests', [DosenController::class, 'counselingRequests'])->name('counseling-requests');
-        
+
         // PATCH /dosen/counseling/{counselingRequest}/status -> Approve/Reject counseling request
         Route::patch('/counseling/{counselingRequest}/status', [DosenController::class, 'updateCounselingStatus'])->name('counseling.update-status');
-        
+
         // GET /dosen/counseling/{counselingRequest}/download -> Download counseling file
         Route::get('/counseling/{counselingRequest}/download', function (App\Models\CounselingRequest $counselingRequest) {
             $user = Auth::user();
-            
+
             if ($counselingRequest->dosen_id !== $user->id) {
                 abort(403, 'Unauthorized to download this file.');
             }
-            
+
             if (!$counselingRequest->file_path || !Storage::disk('public')->exists($counselingRequest->file_path)) {
                 abort(404, 'File not found.');
             }
-            
+
             return response()->download(storage_path('app/public/' . $counselingRequest->file_path));
         })->name('counseling.download');
-        
+
         // RESOURCE /dosen/schedules -> CRUD Schedules
         Route::resource('schedules', DosenController::class)->except(['index', 'show']);
-        
+
         // PATCH /dosen/booking/{id}/status -> Approve/Reject student request
         Route::patch('/booking/{booking}/status', [DosenController::class, 'updateBookingStatus'])->name('booking.status');
     });
-    
+
     // Mahasiswa routes - only accessible by users with role 'mahasiswa'
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         // GET /mahasiswa/dashboard -> List of available schedules from all Dosen (Searchable)
         Route::get('/dashboard', [MahasiswaController::class, 'dashboard'])->name('dashboard');
-        
+
         // POST /mahasiswa/booking -> Store booking + Handle File Upload
         Route::post('/booking', [MahasiswaController::class, 'storeBooking'])->name('booking.store');
-        
+
         // GET /mahasiswa/my-bookings -> See history and status
         Route::get('/my-bookings', [MahasiswaController::class, 'myBookings'])->name('my-bookings');
-        
+
         // Additional route for booking form
         Route::get('/booking/{schedule}', [MahasiswaController::class, 'showBookingForm'])->name('booking.form');
-        
+
         // GET /mahasiswa/counseling/create -> Show counseling request form
         Route::get('/counseling/create', [MahasiswaController::class, 'createCounselingRequest'])->name('counseling.create');
-        
+
         // POST /mahasiswa/counseling -> Store counseling request
         Route::post('/counseling', [MahasiswaController::class, 'storeCounselingRequest'])->name('counseling.store');
-        
+
         // GET /mahasiswa/counseling/{counselingRequest}/download -> Download counseling file
         Route::get('/counseling/{counselingRequest}/download', function (App\Models\CounselingRequest $counselingRequest) {
             $user = Auth::user();
-            
+
             if ($counselingRequest->mahasiswa_id !== $user->id) {
                 abort(403, 'Unauthorized to download this file.');
             }
-            
+
             if (!$counselingRequest->file_path || !Storage::disk('public')->exists($counselingRequest->file_path)) {
                 abort(404, 'File not found.');
             }
-            
+
             return response()->download(storage_path('app/public/' . $counselingRequest->file_path));
         })->name('counseling.download');
     });
@@ -139,16 +139,13 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         // GET /admin/dashboard -> Admin dashboard with statistics
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        
-        // GET /admin/assignments -> List all assignments
-        Route::get('/assignments', [AdminController::class, 'index'])->name('assignments.index');
-        
+
         // GET /admin/assignments/create -> Show create assignment form
         Route::get('/assignments/create', [AdminController::class, 'create'])->name('assignments.create');
-        
+
         // POST /admin/assignments -> Store new assignment
         Route::post('/assignments', [AdminController::class, 'store'])->name('assignments.store');
-        
+
         // DELETE /admin/assignments/{assignment} -> Delete assignment
         Route::delete('/assignments/{assignment}', [AdminController::class, 'destroy'])->name('assignments.destroy');
     });

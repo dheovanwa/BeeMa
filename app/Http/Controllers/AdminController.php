@@ -8,17 +8,13 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $totalDosen = User::where('role', 'dosen')->count();
         $totalMahasiswa = User::where('role', 'mahasiswa')->count();
         $totalAssignments = Assignment::count();
 
-        return view('admin.dashboard', compact('totalDosen', 'totalMahasiswa', 'totalAssignments'));
-    }
-
-    public function index(Request $request)
-    {
+        // Get assignments with filtering
         $query = Assignment::with(['dosen', 'mahasiswa']);
 
         // Filter by lecturer name/email
@@ -40,7 +36,8 @@ class AdminController extends Controller
         }
 
         $assignments = $query->get();
-        return view('admin.assignments.index', compact('assignments'));
+
+        return view('admin.dashboard', compact('totalDosen', 'totalMahasiswa', 'totalAssignments', 'assignments'));
     }
 
     public function create()
@@ -99,12 +96,12 @@ class AdminController extends Controller
             $message .= '.';
         }
 
-        return redirect()->route('admin.assignments.index')->with('success', $message);
+        return redirect()->route('admin.dashboard')->with('success', $message);
     }
 
     public function destroy(Assignment $assignment)
     {
         $assignment->delete();
-        return redirect()->route('admin.assignments.index')->with('success', 'Assignment deleted successfully.');
+        return redirect()->route('admin.dashboard')->with('success', 'Assignment deleted successfully.');
     }
 }
