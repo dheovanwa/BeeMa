@@ -4,6 +4,10 @@
 
 @section('content')
 <style>
+    .alert{
+        display: none;
+    }
+
     .page-header {
         margin-bottom: 40px;
         padding-bottom: 20px;

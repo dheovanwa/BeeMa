@@ -4,6 +4,10 @@
 
 @section('content')
 <style>
+    .alert{
+        display: none;
+    }
+
     .dashboard-header {
         margin-bottom: 40px;
     }
@@ -123,13 +127,13 @@
         background: #c82333;
     }
 
-    .alert {
+    .alert-admin {
         padding: 15px;
         border-radius: 5px;
         margin-bottom: 20px;
     }
 
-    .alert-success {
+    .alert-admin-success {
         background: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
@@ -418,7 +422,7 @@
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success">
+    <div class="alert-admin alert-admin-success">
         {{ session('success') }}
     </div>
 @endif
