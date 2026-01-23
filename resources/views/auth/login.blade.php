@@ -9,6 +9,10 @@
         margin: 0 auto;
     }
 
+    .alert{
+        display: none;
+    }
+
     .login-container {
         max-width: 500px;
         margin: 0 auto;

@@ -9,6 +9,10 @@
         margin: 0 auto;
     }
 
+    .alert{
+        display: none;
+    }
+
     .register-container {
         max-width: 600px;
         margin: 0 auto;
