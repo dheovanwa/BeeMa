@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,26 +6,28 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 }
 
 /* Components */
-@import './components/language.css';
-@import './components/buttons.css';
-@import './components/alerts.css';
-@import './components/badges.css';
-@import './components/cards.css';
-@import './components/tables.css';
-@import './components/forms.css';
-@import './components/grid.css';
-@import './components/modal.css';
-@import './components/forms.css';
-@import './components/content-header.css';
-@import './components/empty-state.css';
+@import "./components/language.css";
+@import "./components/buttons.css";
+@import "./components/alerts.css";
+@import "./components/badges.css";
+@import "./components/cards.css";
+@import "./components/tables.css";
+@import "./components/forms.css";
+@import "./components/grid.css";
+@import "./components/modal.css";
+@import "./components/forms.css";
+@import "./components/content-header.css";
+@import "./components/empty-state.css";
 
 /* page SPecific CSS */
-@import './pages/mahasiswa/mybookings.css';
+@import "./pages/mahasiswa/mybookings.css";
 
 @layer base {
     * {
@@ -35,10 +37,13 @@
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(135deg, #fef3e0 0%, #ffe8cc 100%);
         min-height: 100vh;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
 
@@ -51,10 +56,12 @@
         padding: 15px 30px;
         border-radius: 10px;
         margin-bottom: 30px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        max-width: 1280px;
     }
 
     header .logo {
@@ -70,6 +77,7 @@
     }
 
     .container {
+        width: 100%;
         max-width: 1200px;
         margin: 0 auto;
     }
@@ -79,7 +87,7 @@
         background: white;
         padding: 30px;
         border-radius: 10px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Logout Buttons */
@@ -96,10 +104,10 @@
 
     .logout-btn:hover {
         background: #c0392b;
-    }   
+    }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
         header {
             flex-direction: column;
             gap: 15px;
@@ -117,7 +125,8 @@
             font-size: 12px;
         }
 
-        table th, table td {
+        table th,
+        table td {
             padding: 10px;
         }
     }
