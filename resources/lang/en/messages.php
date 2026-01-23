@@ -73,5 +73,5 @@ return [
     'joining_students' => 'Joining Students',
     'search' => 'Search',
     'reset' => 'Reset',
-    'select_lecturer_first' => 'Select 1 Lecturer First',
+    'select_lecturer_first' => 'Please Select a Lecturer',
 ];

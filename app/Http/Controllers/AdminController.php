@@ -63,6 +63,7 @@ class AdminController extends Controller
             'mahasiswa_id' => 'required|array|min:1',
             'mahasiswa_id.*' => 'exists:users,id',
         ], [
+            'dosen_id.required' => 'Please select a lecturer.',
             'mahasiswa_id.required' => 'Please select at least one student.',
             'mahasiswa_id.min' => 'Please select at least one student.',
         ]);

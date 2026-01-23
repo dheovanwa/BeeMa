@@ -73,5 +73,5 @@ return [
     'joining_students' => 'Mahasiswa Bergabung',
     'search' => 'Cari',
     'reset' => 'Reset',
-    'select_lecturer_first' => 'Pilih 1 Dosen Terlebih Dahulu',
+    'select_lecturer_first' => 'Mohon Pilih Dosen Terlebih Dahulu',
 ];
