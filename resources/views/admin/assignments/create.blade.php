@@ -201,6 +201,23 @@
         box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
     }
 
+    .select-list-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(214, 137, 16, 0.85);
+        border-radius: 8px;
+        font-weight: bold;
+        color: white;
+        font-size: 15px;
+        backdrop-filter: blur(2px);
+        padding: 20px;
+        text-align: center;
+        z-index: 10;
+    }
+
     .select-item {
         display: flex;
         align-items: center;
@@ -480,7 +497,11 @@
             </div>
             <p class="help-text">💡 {{ app()->getLocale() === 'en' ? 'Type name or email to filter' : 'Ketik nama atau email untuk memfilter' }}</p>
 
-            <div class="select-list" id="mahasiswaList">
+            <div class="custom-select-wrapper" style="position: relative;">
+                <div id="selectLecturerOverlay" class="select-list-overlay" style="display: none;">
+                    {{ __('messages.select_lecturer_first') }}
+                </div>
+                <div class="select-list" id="mahasiswaList">
                 <label class="select-item" style="opacity: 0.5; cursor: default;">
                     <div class="select-item-text">
                         <span class="select-item-name">{{ app()->getLocale() === 'en' ? 'Select a student...' : 'Pilih seorang mahasiswa...' }}</span>
@@ -512,6 +533,7 @@
                     </label>
                 @endforeach
             </div>
+            </div>
 
             <div class="selection-preview">
                 <div class="preview-label">{{ app()->getLocale() === 'en' ? 'Selected Student' : 'Mahasiswa Terpilih' }}</div>
@@ -537,6 +559,28 @@
     // Make assigned students data available globally
     window.assignedStudentsByDosen = @json($assignedStudentsByDosen);
     window.assignedStudentMessage = '{{ __('messages.assigned_student') }}';
+    window.selectLecturerMessage = '{{ __('messages.select_lecturer_first') }}';
+
+    // Show/hide select lecturer overlay
+    function toggleSelectLecturerOverlay() {
+        const selectedDosen = document.querySelector('.dosen-input:checked');
+        const overlay = document.getElementById('selectLecturerOverlay');
+        const mahasiswaList = document.getElementById('mahasiswaList');
+
+        if (!selectedDosen) {
+            // No dosen selected - show overlay
+            overlay.style.display = 'flex';
+            mahasiswaList.style.position = 'relative';
+            mahasiswaList.style.pointerEvents = 'none';
+            mahasiswaList.style.opacity = '0.6';
+        } else {
+            // Dosen selected - hide overlay
+            overlay.style.display = 'none';
+            mahasiswaList.style.position = 'relative';
+            mahasiswaList.style.pointerEvents = 'auto';
+            mahasiswaList.style.opacity = '1';
+        }
+    }
 
     // Search functionality for Dosen
     document.getElementById('dosen_search').addEventListener('input', function() {
@@ -702,6 +746,7 @@
         input.addEventListener('change', function() {
             updateDosenPreview();
             updateMahasiswaAssignedStatus();
+            toggleSelectLecturerOverlay();
         });
     });
 
@@ -716,6 +761,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         updateDosenPreview();
         updateMahasiswaPreview();
+        toggleSelectLecturerOverlay();
         updateMahasiswaAssignedStatus();
     });
 </script>
