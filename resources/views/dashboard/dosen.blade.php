@@ -4,6 +4,17 @@
 
 @section('content')
 <style>
+    .btn-secondary{
+        background: white;
+        color: #f39c12;
+        border: 1px solid #f39c12;
+    }
+
+    .btn-secondary:hover{
+        background: #f3ca12d2;
+        color: white;
+    }
+
     .header-section {
         display: flex;
         justify-content: space-between;
