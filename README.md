@@ -147,7 +147,7 @@ Implementasi operasi CRUD lengkap untuk entities utama aplikasi.
 
 #### B. **Booking/Permintaan Jadwal**
 
--   **Create:** Mahasiswa dapat membuat booking untuk jadwal dosen
+-   **Create:** Dosen dapat membuat booking untuk mahasiswa ikuti dengan jumlah mahasiswa terbatas
 -   **Read:** Daftar booking dengan status (pending, approved, rejected)
 -   **Update:** Dosen dapat mengubah status booking (approved/rejected)
 -   **Delete:** Sistem otomatis membersihkan booking yang dihapus
