@@ -401,3 +401,20 @@ Route::middleware('auth')->group(function () {
 
 ---
 
+**Akun terdaftar di DB yang dapat digunakan:**
+#### Mahasiswa
+- Email: m@1, Password: 12345678
+- Email: m@2, Password: 12345678
+- Email: m@3, Password: 12345678
+- Email: m@4, Password: 12345678
+- Email: m@5, Password: 12345678
+
+#### Dosen 
+- Email: d@1, Password: 12345678
+- Email: d@2, Password: 12345678
+- Email: d@3, Password: 12345678
+- Email: d@4, Password: 12345678
+- Email: d@5, Password: 12345678
+
+#### Admin
+- Email: admin@admin, Password: 12345678
